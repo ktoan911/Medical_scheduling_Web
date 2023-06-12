@@ -1,0 +1,27 @@
+{
+  "name": "booking_care",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon --inspect src/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "7.15.5",
+    "@babel/node": "7.15.4",
+    "@babel/preset-env": "7.15.6",
+    "body-parser": "^1.19.0",
+    "dotenv": "10.0.0",
+    "ejs": "3.1.9",
+    "express": "^4.18.2",
+    "multer": "^1.4.5-lts.1",
+    "mysql2": "^3.3.3",
+    "sequelize": "^6.32.0"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.12"
+  }
+}
