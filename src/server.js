@@ -1,8 +1,8 @@
 const express = require('express');
 const configViewEngine = require('./config/viewEngine');
 const initWebRoute = require('./route/web');
-var bodyParser = require('body-parser')
-
+var bodyParser = require('body-parser');
+const connecDB = require('./config/connectDB');
 require('dotenv').config();
 
 
@@ -14,9 +14,9 @@ app.use(bodyParser.json());
 
 //setup view engine
 configViewEngine(app);
-
-//init web route
 initWebRoute(app);
+
+connecDB();
 
 
 //handle 404 Not Found
