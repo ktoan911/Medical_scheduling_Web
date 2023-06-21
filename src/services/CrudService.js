@@ -27,6 +27,36 @@ let hashUserPassword = async (password) => {
     return await bcrypt.hashSync(password, salt);
 }
 
+let getAllUser = async (req, res) => {
+    return await db.User.findAll({
+        raw: true
+    });
+}
+
+let deleteUserById = async (id) => {
+    return await db.User.destroy({
+        where: { id: id }
+    });
+}
+
+let getUserById = async (userId) => {
+    return await db.User.findOne({
+        where: { id: userId },
+        raw: true,
+    });
+}
+
+// let updateUserById = async (id) => {
+//     return await db.User.update({
+//         where: { id: id },
+//     })
+// }
+
+
 module.exports = {
-    createUser
+    createUser,
+    getAllUser,
+    getUserById,
+    deleteUserById,
+    //updateUserById
 }
