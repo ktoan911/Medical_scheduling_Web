@@ -14,7 +14,7 @@ let handleUserLogin = async (email, password) => {
         let isExist = await checkUserEmail(email);
         if (isExist) {
             let user = await db.User.findOne({
-                attributes: ['email', 'roleId', 'password'],
+                attributes: ['email', 'roleId', 'password', 'firstName', 'lastName'],
                 where: {
                     email: email,
                 },
@@ -103,27 +103,28 @@ let createUser = async (data) => {
         if (check.errCode === 0) {
             return {
                 errCode: 1,
-                message: 'Email already exists'
+                errMsg: 'Email already exists'
             };
+        } else {
+            let hashPasswordBcrypt = await hashUserPassword(data.password);
+            await db.User.create({
+                email: data.email,
+                password: hashPasswordBcrypt,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                address: data.address,
+                gender: data.gender,
+                roleId: data.roleId,
+                positionId: data.positionId,
+                phoneNumber: data.phoneNumber,
+                image: data.avatar
+            });
+            return {
+                errCode: 0,
+                message: 'ok'
+            }
         }
 
-        let hashPasswordBcrypt = await hashUserPassword(data.password);
-        await db.User.create({
-            email: data.email,
-            password: hashPasswordBcrypt,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            address: data.address,
-            gender: data.gender === '1' ? true : false,
-            roleId: data.roleId,
-            phoneNumber: data.phoneNumber,
-        });
-
-        // Return success message or any other value you need
-        return {
-            errCode: 0,
-            message: 'ok'
-        }
     } catch (error) {
         // Handle the error appropriately (e.g., log, return an error message)
         console.error(error);
@@ -177,9 +178,12 @@ let updateUserById = async (data) => {
             user.firstName = data.firstName;
             user.lastName = data.lastName;
             user.address = data.address;
-            user.gender = data.gender === '1' ? true : false;
+            user.gender = data.gender;
             user.roleId = data.roleId;
             user.phoneNumber = data.phoneNumber;
+            user.positionId = data.positionId;
+            user.image = data.avatar;
+
             await user.save();
             return {
                 errCode: 0,
@@ -200,6 +204,27 @@ let updateUserById = async (data) => {
     }
 };
 
+let getAllCodeService = async (typeInput) => {
+    try {
+        let res = {};
+        if (!typeInput) {
+            res.errCode = 1;
+            res.errMsg = 'Missing required field ' + typeInput;
+            return res;
+        } else {
+            let allcode = await db.Allcode.findAll({
+                where: {
+                    type: typeInput
+                }
+            });
+            res.errCode = 0;
+            res.data = allcode
+        }
+        return res;
+    } catch (error) {
+
+    }
+}
 
 
 module.exports = {
@@ -208,5 +233,6 @@ module.exports = {
     getAllUsers,
     createUser,
     deleteUserById,
-    updateUserById
+    updateUserById,
+    getAllCodeService
 }

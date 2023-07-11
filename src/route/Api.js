@@ -10,6 +10,8 @@ const initApiRoute = (app) => {
     router.put('/api/edit-user', ApiUserController.handleEditUser);
     router.delete('/api/delete-user', ApiUserController.handleDeleteUser);
 
+    router.get('/api/allcode', ApiUserController.getAllCode);
+
 
     return app.use('/', router);
 }
