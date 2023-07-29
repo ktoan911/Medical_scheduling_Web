@@ -1,6 +1,7 @@
 const db = require('../../models/index');
 require('dotenv').config();
 const _ = require('lodash');
+const emailService = require('./emailService');
 
 let postBookAppointment = async (data) => {
     try {
@@ -10,6 +11,14 @@ let postBookAppointment = async (data) => {
                 message: 'Missing requied parameters!',
             }
         } else {
+            await emailService.sendEmail({
+                reciverEmail: data.email,
+                patientName: 'Thuc Skin vip',
+                time: '10:00 AM - Chủ nhật',
+                doctorName: 'ThucSkin',
+                redirectLink: 'https://www.youtube.com/watch?v=0GL--Adfqhc&list=PLncHg6Kn2JT6E38Z3kit9Hnif1xC_9VqI&index=97'
+            })
+
             //upsert 
             let user = await db.User.findOrCreate({
                 where: { email: data.email },
