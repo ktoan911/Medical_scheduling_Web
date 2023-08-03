@@ -52,71 +52,97 @@ let getAllDoctors = async () => {
         throw error;
     }
 }
+
+const requiredFields = [
+    'doctorId',
+    'contentHTML',
+    'contentMarkDown',
+    'action',
+    'selectedPrice',
+    'selectedPayment',
+    'selectedProvince',
+    'nameClinic',
+    'addressClinic',
+    'note',
+    //'clinicId',
+    'specialtyId',
+];
+
 let saveInfoDoctor = async (inputData) => {
-    try {
-        if (!inputData.doctorId || !inputData.contentHTML
-            || !inputData.contentMarkDown || !inputData.action
-            || !inputData.selectedPrice || !inputData.selectedPayment
-            || !inputData.selectedProvince || !inputData.nameClinic
-            || !inputData.addressClinic || !inputData.note) {
+    if (!inputData) {
+        return {
+            errCode: 1,
+            message: 'Missing parameter!',
+        };
+    }
+
+    for (const field of requiredFields) {
+        if (!inputData[field]) {
             return {
                 errCode: 1,
-                message: 'Missing parameter!',
-            };
-        } else {
-            //upsert to markdown
-            if (inputData.action === 'CREATE') {
-                await db.MarkDown.create({
-                    contentHTML: inputData.contentHTML,
-                    contentMarkDown: inputData.contentMarkDown,
-                    description: inputData.description,
-                    doctorId: inputData.doctorId
-                });
-            } else if (inputData.action === 'EDIT') {
-                let doctorMarkDown = await db.MarkDown.findOne({
-                    where: { doctorId: inputData.doctorId },
-                    raw: false
-                })
-                if (doctorMarkDown) {
-                    doctorMarkDown.contentHTML = inputData.contentHTML
-                    doctorMarkDown.contentMarkDown = inputData.contentMarkDown
-                    doctorMarkDown.description = inputData.description
-                    await doctorMarkDown.save()
-                }
-            }
-
-            //upsert to doctor_infor table
-            let doctorInfor = await db.Doctor_Infor.findOne({
-                where: { doctorId: inputData.doctorId },
-                raw: false,
-            })
-            if (doctorInfor) {
-                //update
-                doctorInfor.doctorId = inputData.doctorId;
-                doctorInfor.priceId = inputData.selectedPrice;
-                doctorInfor.provinceId = inputData.selectedProvince;
-                doctorInfor.paymentId = inputData.selectedPayment;
-                doctorInfor.nameClinic = inputData.nameClinic;
-                doctorInfor.addressClinic = inputData.addressClinic;
-                doctorInfor.note = inputData.note;
-                await doctorInfor.save();
-            } else {
-                //create 
-                await db.Doctor_Infor.create({
-                    doctorId: inputData.doctorId,
-                    priceId: inputData.selectedPrice,
-                    provinceId: inputData.selectedProvince,
-                    paymentId: inputData.selectedPayment,
-                    nameClinic: inputData.nameClinic,
-                    addressClinic: inputData.addressClinic,
-                    note: inputData.note
-                })
-            }
-            return {
-                errCode: 0,
-                message: 'Save info doctor successfully!',
+                message: 'Missing parameter: ' + field,
             };
         }
+    }
+
+    try {
+        //upsert to markdown
+        if (inputData.action === 'CREATE') {
+            await db.MarkDown.create({
+                contentHTML: inputData.contentHTML,
+                contentMarkDown: inputData.contentMarkDown,
+                description: inputData.description,
+                doctorId: inputData.doctorId
+            });
+        } else if (inputData.action === 'EDIT') {
+            let doctorMarkDown = await db.MarkDown.findOne({
+                where: { doctorId: inputData.doctorId },
+                raw: false
+            })
+            if (doctorMarkDown) {
+                doctorMarkDown.contentHTML = inputData.contentHTML
+                doctorMarkDown.contentMarkDown = inputData.contentMarkDown
+                doctorMarkDown.description = inputData.description
+                await doctorMarkDown.save()
+            }
+        }
+
+        //upsert to doctor_infor table
+        let doctorInfor = await db.Doctor_Infor.findOne({
+            where: { doctorId: inputData.doctorId },
+            raw: false,
+        })
+        if (doctorInfor) {
+            //update
+            doctorInfor.doctorId = inputData.doctorId;
+            doctorInfor.priceId = inputData.selectedPrice;
+            doctorInfor.provinceId = inputData.selectedProvince;
+            doctorInfor.paymentId = inputData.selectedPayment;
+            doctorInfor.nameClinic = inputData.nameClinic;
+            doctorInfor.addressClinic = inputData.addressClinic;
+            doctorInfor.note = inputData.note;
+            doctorInfor.specialtyId = inputData.specialtyId;
+            doctorInfor.clinicId = inputData.clinicId;
+            await doctorInfor.save();
+        } else {
+            //create 
+            await db.Doctor_Infor.create({
+                doctorId: inputData.doctorId,
+                priceId: inputData.selectedPrice,
+                provinceId: inputData.selectedProvince,
+                paymentId: inputData.selectedPayment,
+                nameClinic: inputData.nameClinic,
+                addressClinic: inputData.addressClinic,
+                note: inputData.note,
+                specialtyId: inputData.specialtyId,
+                clinicId: inputData.clinicId
+            })
+        }
+        return {
+            errCode: 0,
+            message: 'Save info doctor successfully!',
+        };
+
     } catch (error) {
         return {
             errCode: -1,
@@ -154,6 +180,8 @@ let getDetailDoctorById = async (id) => {
                             { model: db.Allcode, as: 'priceTypeData', attributes: ['valueVi', 'valueEn'] },
                             { model: db.Allcode, as: 'provinceTypeData', attributes: ['valueVi', 'valueEn'] },
                             { model: db.Allcode, as: 'paymentTypeData', attributes: ['valueVi', 'valueEn'] },
+
+                            { model: db.Specialty, as: 'specialtyTypeData', attributes: ['id', 'name'] },
                         ]
                     },
                     { model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi'] },
@@ -242,6 +270,10 @@ let getScheduleByDateService = async (doctorId, date) => {
                     {
                         model: db.Allcode, as: 'timeTypeData',
                         attributes: ['valueEn', 'valueVi']
+                    },
+                    {
+                        model: db.User, as: 'doctorData',
+                        attributes: ['firstName', 'lastName']
                     },
                 ],
                 raw: false,
@@ -340,7 +372,7 @@ let getProfileDoctorById = async (doctorId) => {
             })
             if (!data) data = [];
             if (data && data.image) {
-                data.image = new Buffer(data.image, 'base64').toString('binary');
+                data.image = new Buffer.from(data.image, 'base64').toString('binary');
             }
 
             return {

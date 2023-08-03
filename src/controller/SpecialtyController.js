@@ -1,8 +1,8 @@
-const patientService = require('../services/patientService');
+const specialtyService = require('../services/specialtyService');
 
-let postBookAppointment = async (req, res) => {
+let createSpecialty = async (req, res) => {
     try {
-        let data = await patientService.postBookAppointment(req.body);
+        let data = await specialtyService.createSpecialty(req.body);
         return res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -13,9 +13,9 @@ let postBookAppointment = async (req, res) => {
     }
 }
 
-let postVerifyBookAppointment = async (req, res) => {
+let getAllSpecialty = async (req, res) => {
     try {
-        let data = await patientService.postVerifyBookAppointmentService(req.body);
+        let data = await specialtyService.getAllSpecialty();
         return res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -27,6 +27,6 @@ let postVerifyBookAppointment = async (req, res) => {
 }
 
 module.exports = {
-    postBookAppointment,
-    postVerifyBookAppointment
+    createSpecialty,
+    getAllSpecialty
 }

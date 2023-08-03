@@ -1,6 +1,7 @@
 const ApiUserController = require('../controller/Api_userController');
 const doctorController = require('../controller/doctorController');
 const PatientController = require('../controller/PatientController');
+const SpecialtyController = require('../controller/SpecialtyController');
 const express = require('express');
 
 let router = express.Router();
@@ -24,6 +25,10 @@ const initApiRoute = (app) => {
     router.get('/api/get-profile-doctor-by-id', doctorController.getProfileDoctorById);
 
     router.post('/api/patient-book-appointment', PatientController.postBookAppointment);
+    router.post('/api/verify-book-appointment', PatientController.postVerifyBookAppointment);
+
+    router.post('/api/create-new-specialty', SpecialtyController.createSpecialty);
+    router.get('/api/get-all-specialty', SpecialtyController.getAllSpecialty);
 
     return app.use('/', router);
 }

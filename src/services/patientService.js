@@ -2,21 +2,30 @@ const db = require('../../models/index');
 require('dotenv').config();
 const _ = require('lodash');
 const emailService = require('./emailService');
+const { v4: uuidv4 } = require('uuid');
+
+let buildUrlEmail = (doctorId, token) => {
+    let result = `${process.env.URL_REACT}/verify-booking?token=${token}&doctorId=${doctorId}`
+    return result;
+}
 
 let postBookAppointment = async (data) => {
     try {
-        if (!data.email || !data.doctorId || !data.timeType || !data.date) {
+        if (!data.email || !data.doctorId || !data.timeType || !data.date || !data.fullName) {
             return {
                 errCode: 1,
                 message: 'Missing requied parameters!',
             }
         } else {
+            let token = uuidv4();
+
             await emailService.sendEmail({
                 reciverEmail: data.email,
-                patientName: 'Thuc Skin vip',
-                time: '10:00 AM - Chủ nhật',
-                doctorName: 'ThucSkin',
-                redirectLink: 'https://www.youtube.com/watch?v=0GL--Adfqhc&list=PLncHg6Kn2JT6E38Z3kit9Hnif1xC_9VqI&index=97'
+                patientName: data.fullName,
+                time: data.timeString,
+                doctorName: data.doctorName,
+                language: data.language,
+                redirectLink: buildUrlEmail(data.doctorId, token)
             })
 
             //upsert 
@@ -36,7 +45,8 @@ let postBookAppointment = async (data) => {
                         doctorId: data.doctorId,
                         patientId: user[0].id,
                         date: data.date,
-                        timeType: data.timeType
+                        timeType: data.timeType,
+                        token: token
                     }
                 })
             }
@@ -53,8 +63,42 @@ let postBookAppointment = async (data) => {
     }
 }
 
+let postVerifyBookAppointmentService = async (data) => {
+    try {
+        if (!data.token || !data.doctorId) {
+            return {
+                errCode: 1,
+                message: 'Missing requied parameters!',
+            }
+        } else {
+            let appointment = await db.Booking.findOne({
+                where: {
+                    doctorId: data.doctorId,
+                    token: data.token,
+                    statusId: 'S1'
+                },
+                raw: false  // object of resquelize || raw = true: object JavaScript
+            })
+            if (appointment) {
+                appointment.statusId = 'S2',
+                    await appointment.save();
+            }
 
+            return {
+                errCode: 0,
+                message: 'Updated appointment successfully!',
+                data: appointment
+            }
+        }
+    } catch (error) {
+        return {
+            errCode: -1,
+            message: 'Error from server...',
+        };
+    }
+}
 
 module.exports = {
-    postBookAppointment
+    postBookAppointment,
+    postVerifyBookAppointmentService
 }
