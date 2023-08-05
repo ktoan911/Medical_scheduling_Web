@@ -2,6 +2,7 @@ const ApiUserController = require('../controller/Api_userController');
 const doctorController = require('../controller/doctorController');
 const PatientController = require('../controller/PatientController');
 const SpecialtyController = require('../controller/SpecialtyController');
+const ClinicController = require('../controller/ClinicController');
 const express = require('express');
 
 let router = express.Router();
@@ -18,6 +19,7 @@ const initApiRoute = (app) => {
     router.get('/api/get-all-doctors', doctorController.getAllDoctors);
     router.post('/api/save-info-doctor', doctorController.postInfoDoctor);
     router.get('/api/get-detail-doctor-by-id', doctorController.getDetailDoctorById);
+    router.get('/api/get-all-doctor-infor', doctorController.getAllDoctorInfor);
 
     router.post('/api/bulk-create-schedule', doctorController.bulkCreateSchedule);
     router.get('/api/get-schedule-doctor-by-date', doctorController.getScheduleByDate);
@@ -29,6 +31,11 @@ const initApiRoute = (app) => {
 
     router.post('/api/create-new-specialty', SpecialtyController.createSpecialty);
     router.get('/api/get-all-specialty', SpecialtyController.getAllSpecialty);
+    router.get('/api/get-detail-specialty-by-id', SpecialtyController.getDetailSpecialtyById);
+
+    router.post('/api/create-new-clinic', ClinicController.createClinic);
+    router.get('/api/get-all-clinic', ClinicController.getAllClinic);
+    router.get('/api/get-detail-clinic-by-id', ClinicController.getDetailClinicById);
 
     return app.use('/', router);
 }

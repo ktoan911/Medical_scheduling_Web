@@ -1,8 +1,9 @@
-const specialtyService = require('../services/specialtyService');
+const clinicService = require('../services/clinicService');
 
-let createSpecialty = async (req, res) => {
+
+let createClinic = async (req, res) => {
     try {
-        let data = await specialtyService.createSpecialty(req.body);
+        let data = await clinicService.createClinic(req.body);
         return res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -13,9 +14,9 @@ let createSpecialty = async (req, res) => {
     }
 }
 
-let getAllSpecialty = async (req, res) => {
+let getAllClinic = async (req, res) => {
     try {
-        let data = await specialtyService.getAllSpecialty();
+        let data = await clinicService.getAllClinic();
         return res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -25,10 +26,9 @@ let getAllSpecialty = async (req, res) => {
         });
     }
 }
-
-let getDetailSpecialtyById = async (req, res) => {
+let getDetailClinicById = async (req, res) => {
     try {
-        let data = await specialtyService.getDetailSpecialtyById(req.query.id, req.query.location);
+        let data = await clinicService.getDetailClinicById(req.query.id);
         return res.status(200).json(data);
     } catch (error) {
         console.error(error);
@@ -40,7 +40,7 @@ let getDetailSpecialtyById = async (req, res) => {
 }
 
 module.exports = {
-    createSpecialty,
-    getAllSpecialty,
-    getDetailSpecialtyById
+    createClinic,
+    getAllClinic,
+    getDetailClinicById
 }

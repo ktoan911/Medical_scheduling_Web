@@ -38,6 +38,24 @@ let getAllDoctors = async (req, res) => {
     }
 }
 
+let getAllDoctorInfor = async (req, res) => {
+    try {
+        let response = await doctorService.getAllDoctorInfor();
+        return res.status(200).json({
+            errCode: 0,
+            message: 'OK',
+            data: response
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ // Use 500 status code for server error
+            errCode: -1,
+            message: 'Error from server...',
+            error: error // Send the error object in the response
+        });
+    }
+}
+
 let postInfoDoctor = async (req, res) => {
     try {
         let response = await doctorService.saveInfoDoctor(req.body);
@@ -128,5 +146,6 @@ module.exports = {
     bulkCreateSchedule,
     getScheduleByDate,
     getExtraInforDoctorById,
-    getProfileDoctorById
+    getProfileDoctorById,
+    getAllDoctorInfor
 };

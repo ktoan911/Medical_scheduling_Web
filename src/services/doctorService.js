@@ -53,6 +53,16 @@ let getAllDoctors = async () => {
     }
 }
 
+let getAllDoctorInfor = async () => {
+    try {
+        let doctors = await db.Doctor_Infor.findAll();
+        return doctors;
+    } catch (error) {
+        console.log('Error:', error);
+        throw error;
+    }
+}
+
 const requiredFields = [
     'doctorId',
     'contentHTML',
@@ -64,7 +74,7 @@ const requiredFields = [
     'nameClinic',
     'addressClinic',
     'note',
-    //'clinicId',
+    'clinicId',
     'specialtyId',
 ];
 
@@ -397,5 +407,6 @@ module.exports = {
     bulkCreateSchedule,
     getScheduleByDateService,
     getExtraInforDoctorById,
-    getProfileDoctorById
+    getProfileDoctorById,
+    getAllDoctorInfor
 }
