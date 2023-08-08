@@ -11,7 +11,9 @@ let buildUrlEmail = (doctorId, token) => {
 
 let postBookAppointment = async (data) => {
     try {
-        if (!data.email || !data.doctorId || !data.timeType || !data.date || !data.fullName) {
+        if (!data.email || !data.doctorId || !data.timeType || !data.date
+            || !data.fullName || !data.selectedGender || !data.address
+            || !data.phoneNumber) {
             return {
                 errCode: 1,
                 message: 'Missing requied parameters!',
@@ -33,13 +35,17 @@ let postBookAppointment = async (data) => {
                 where: { email: data.email },
                 defaults: {
                     email: data.email,
-                    roleId: 'role_patient'
+                    roleId: 'role_patient',
+                    address: data.address,
+                    phoneNumber: data.phoneNumber,
+                    gender: data.selectedGender,
+                    firstName: data.fullName
                 }
             })
             //creare data booking
             if (user[0] && user) {
                 await db.Booking.findOrCreate({
-                    where: { date: data.date },
+                    where: { token: token },
                     defaults: {
                         statusId: 'S1',
                         doctorId: data.doctorId,

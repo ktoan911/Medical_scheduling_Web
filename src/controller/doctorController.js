@@ -138,6 +138,32 @@ let getProfileDoctorById = async (req, res) => {
     }
 }
 
+let getListPatientsForDoctor = async (req, res) => {
+    try {
+        let data = await doctorService.getListPatientsForDoctor(req.query.doctorId, req.query.date);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Error from server...',
+        });
+    }
+}
+
+let sendRemedy = async (req, res) => {
+    try {
+        let data = await doctorService.sendRemedy(req.body);
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            errCode: -1,
+            message: 'Error from server...',
+        });
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
@@ -147,5 +173,7 @@ module.exports = {
     getScheduleByDate,
     getExtraInforDoctorById,
     getProfileDoctorById,
-    getAllDoctorInfor
+    getAllDoctorInfor,
+    getListPatientsForDoctor,
+    sendRemedy
 };

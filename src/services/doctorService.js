@@ -1,6 +1,7 @@
 const db = require('../../models/index');
 require('dotenv').config();
 const _ = require('lodash');
+const emailService = require('../services/emailService');
 
 const MAX_NUMBER_SCHEDULE = process.env.MAX_NUMBER_SCHEDULE
 
@@ -399,6 +400,99 @@ let getProfileDoctorById = async (doctorId) => {
     }
 }
 
+let getListPatientsForDoctor = async (doctorId, date) => {
+    try {
+        if (!doctorId || !date) {
+            return {
+                errCode: 1,
+                message: 'Missing requied parameters!',
+            }
+        } else {
+            let data = await db.Booking.findAll({
+                where: {
+                    statusId: 'S2',
+                    doctorId: doctorId,
+                    date: date
+                },
+                include: [
+                    {
+                        model: db.User, as: 'patientData',
+                        attributes: ['email', 'firstName', 'address', 'phoneNumber', 'gender'],
+                        include: [
+                            {
+                                model: db.Allcode, as: 'genderData',
+                                attributes: ['valueVi', 'valueEn']
+                            },
+                        ],
+                    },
+                    {
+                        model: db.Allcode, as: 'timeTypeDataPatient',
+                        attributes: ['valueEn', 'valueVi']
+                    },
+                    {
+                        model: db.User, as: 'doctorDataById',
+                        attributes: ['email', 'firstName', 'lastName', 'address', 'phoneNumber'],
+                    },
+                ],
+                raw: false,
+                nest: true,
+            })
+
+            return {
+                errCode: 0,
+                message: 'OK',
+                data: data
+            }
+        }
+    } catch (error) {
+        console.error("Caught error:", error);
+        return {
+            errCode: -1,
+            message: 'Error from server...',
+        };
+    }
+}
+
+let sendRemedy = async (data) => {
+    try {
+        if (!data.email || !data.doctorId || !data.patientId
+            || !data.timeType || !data.imageBase64) {
+            return {
+                errCode: 1,
+                message: 'Missing requied parameters!',
+            }
+        } else {
+            //update
+            let appointment = await db.Booking.findOne({
+                where: {
+                    statusId: 'S2',
+                    doctorId: data.doctorId,
+                    patientId: data.patientId,
+                    timeType: data.timeType
+                },
+                raw: false,
+            })
+            if (appointment) {
+                appointment.statusId = 'S3';
+                await appointment.save();
+            }
+
+            //send email remedy
+            await emailService.sendAttachment(data);
+
+            return {
+                errCode: 0,
+                message: 'OK',
+            }
+        }
+    } catch (error) {
+        return {
+            errCode: -1,
+            message: 'Error from server...',
+        };
+    }
+}
+
 module.exports = {
     getTopDoctorHome,
     getAllDoctors,
@@ -408,5 +502,7 @@ module.exports = {
     getScheduleByDateService,
     getExtraInforDoctorById,
     getProfileDoctorById,
-    getAllDoctorInfor
+    getAllDoctorInfor,
+    getListPatientsForDoctor,
+    sendRemedy
 }
