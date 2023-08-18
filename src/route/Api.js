@@ -33,11 +33,15 @@ const initApiRoute = (app) => {
 
     router.post('/api/create-new-specialty', SpecialtyController.createSpecialty);
     router.get('/api/get-all-specialty', SpecialtyController.getAllSpecialty);
+    router.delete('/api/delete-specialty-by-id', SpecialtyController.deleteSpecialtyById);
+    router.put('/api/edit-specialty-by-id', SpecialtyController.editSpecialtyById);
     router.get('/api/get-detail-specialty-by-id', SpecialtyController.getDetailSpecialtyById);
 
     router.post('/api/create-new-clinic', ClinicController.createClinic);
     router.get('/api/get-all-clinic', ClinicController.getAllClinic);
     router.get('/api/get-detail-clinic-by-id', ClinicController.getDetailClinicById);
+    router.delete('/api/delete-clinic-by-id', ClinicController.deleteClinicById);
+    router.put('/api/update-clinic-by-id', ClinicController.updateClinicById);
 
     return app.use('/', router);
 }

@@ -101,8 +101,72 @@ let getDetailSpecialtyById = async (id, location) => {
     }
 }
 
+let deleteSpecialtyById = async (inputId) => {
+    try {
+        if (!inputId) {
+            return {
+                errCode: 1,
+                message: 'Missing required parameters!',
+            }
+        } else {
+            await db.Specialty.destroy({
+                where: {
+                    id: inputId
+                },
+            })
+
+            return {
+                errCode: 0,
+                message: 'Delete specialty successfully!',
+            }
+        }
+    } catch (error) {
+        return {
+            errCode: -1,
+            message: 'Error from server...',
+        };
+    }
+}
+
+let editSpecialtyById = async (inputId, data) => {
+    try {
+        if (!inputId) {
+            return {
+                errCode: 1,
+                message: 'Missing required parameters!'
+            };
+        } else {
+            let res = await db.Specialty.findOne({
+                where: {
+                    id: inputId
+                },
+                raw: false
+            });
+
+            if (res && res.image) {
+                res.image = data.image;
+                res.name = data.name;
+                res.descriptionHTML = data.descriptionHTML;
+                res.descriptionMarkdown = data.descriptionMarkdown;
+
+                await res.save();
+                return {
+                    errCode: 0,
+                    message: 'Specialty updated successfully',
+                    data: res
+                };
+            }
+        }
+    } catch (error) {
+        return { errCode: -1, message: 'Error from server...' };
+    }
+};
+
+
 module.exports = {
     createSpecialty,
     getAllSpecialty,
-    getDetailSpecialtyById
+    getDetailSpecialtyById,
+    deleteSpecialtyById,
+    editSpecialtyById
 }

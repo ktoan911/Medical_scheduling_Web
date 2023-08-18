@@ -19,6 +19,12 @@ let getTopDoctorHome = async (limit) => {
             include: [
                 { model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi'] },
                 { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] },
+                {
+                    model: db.Doctor_Infor,
+                    include: [
+                        { model: db.Specialty, as: 'specialtyTypeData', attributes: ['id', 'name'] },
+                    ]
+                },
             ],
             raw: true,
             nest: true,
