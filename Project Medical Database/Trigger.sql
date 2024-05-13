@@ -1,5 +1,4 @@
 ﻿use Medical_Schedule
-
 go
 
 --Trigger chuyển ngày sang thứ ngày đặt lịch
@@ -12,6 +11,20 @@ BEGIN
     UPDATE LichDat 
     SET ThuDatLich = DATEPART(WEEKDAY, inserted.NgayDatLich)
     FROM LichDat INNER JOIN inserted ON LichDat.NgayDatLich = inserted.NgayDatLich;
+END;
+
+go
+
+--Trigger thêm thứ nghỉ
+
+CREATE TRIGGER trg_ThemThuNghi
+ON LichNghi
+AFTER INSERT
+AS
+BEGIN
+    UPDATE LichNghi 
+    SET ThuNghi = DATEPART(WEEKDAY, inserted.NgayNghi)
+    FROM LichNghi INNER JOIN inserted ON LichNghi.NgayNghi = inserted.NgayNghi;
 END;
 
 go

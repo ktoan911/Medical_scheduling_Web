@@ -8,44 +8,45 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Medical_Schedule')
 BEGIN
     CREATE DATABASE Medical_Schedule;
 END;
-
 go
 
 use Medical_Schedule
-
 go
 
 
 create table BacSi (
-	IDBacSi varchar(6) unique not null,
-	CONSTRAINT CK_IDBacSi_Format CHECK (IDBacSi LIKE 'BS[0-9][0-9][0-9]'),
+	id int identity(1,1),
+	IDBacSi AS ('BS'+  RIGHT('000000'+CAST(id as varchar(6)),6)) PERSISTED,
 	hoten nvarchar(50) not null,
-	--[password] varchar(30) not null,
+	[password] varchar(30) not null,
 	namSinh int not null,
 	SDT int not null,
 	gioiTinh nvarchar(10) not null ,
 	email varchar(30) not null,
+	ChucVu varchar(40) not null,
 	HocVan nvarchar(40) not null,
 	Sonamcongtac int not null,
 
-	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi)
+	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi),
+	UNIQUE(password),
+	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN ('Trưởng khoa', 'Phó Khoa', 'Bác sĩ', 'Thực tập sinh'))
 );
 
 
 create table BenhNhan(
-	IDBenhNhan varchar(6) unique not null,
-	CONSTRAINT CK_IDBenhNhan_Format CHECK (IDBenhNhan LIKE 'BN[0-9][0-9][0-9]'),
+	id int identity(1,1),
+	IDBenhNhan AS ('BN'+ RIGHT('000000'+CAST(id as varchar(6)),6)) PERSISTED,
 	hoten nvarchar(50) not null,
 	username varchar(50) not null,
-	password varchar(30) not null,
+	[password] varchar(30) not null,
 	namSinh int not null,
 	diaChi nvarchar(50),
 	SDT int not null ,
 	gioiTinh varchar(10) not null,
 	email varchar(30),
 	
-	CONSTRAINT PK_BenhNhan PRIMARY KEY (IDBenhNhan),
-	UNIQUE([username], [password])
+	UNIQUE([username], [password]),
+	CONSTRAINT PK_BenhNhan PRIMARY KEY (IDBenhNhan)
 );
 
 create table CaKham(
@@ -58,18 +59,19 @@ create table CaKham(
 create table Khoa(
 	IDKhoa int identity(1,1) NOT NULL,
 	TenKhoa nvarchar(50) not null,
-	SoLuongBacSi int not null default 0, -- cần tạo trigger
+	MoTa  nvarchar(max),
+	SoLuongBacSi int not null default 0,
 
 	CONSTRAINT PK_Khoa PRIMARY KEY (IDKhoa) 
 
 );
 
 create table BacsiKhoa(
-	IDBacSi varchar(6) not null,
-	IDKhoa int not null, -- cần tạo trigger
+	IDBacSi varchar(8) not null,
+	IDKhoa int not null, 
 
-	CONSTRAINT PK_BacSiKhoa PRIMARY KEY (IDKhoa,IDBacSi),
 	UNIQUE(IDKhoa, IDBacSi),
+	CONSTRAINT PK_BacSiKhoa PRIMARY KEY (IDKhoa,IDBacSi),
 	CONSTRAINT FK_BacSiKhoa1 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
 	CONSTRAINT FK_BacSiKhoa2 FOREIGN KEY (IDKhoa) REFERENCES Khoa(IDKhoa)
 );
@@ -77,15 +79,15 @@ create table BacsiKhoa(
 
 CREATE TABLE LichLamViec (
     IDLich INT IDENTITY(1,1) ,
-    IDBacSi varchar(6) not null,
+    IDBacSi varchar(8) not null,
 	IDKhoa int not null,
     IDCa INT not null,
     Thu INT NOT NULL,
-	CONSTRAINT CK_YourIntColumn CHECK (Thu >= 2 AND Thu <= 7),
-    [soLuong] INT NOT NULL,
+    soLuong INT NOT NULL,
 
+	CONSTRAINT CK_Thu CHECK (Thu >= 2 AND Thu <= 7),
 	CONSTRAINT PK_LichLamViec PRIMARY KEY (IDLich),
-	CONSTRAINT FK_LichLamViec1 FOREIGN KEY (IDBacSi) REFERENCES BacSi([IDBacSi]),
+	CONSTRAINT FK_LichLamViec1 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
 	CONSTRAINT FK_LichLamViec2 FOREIGN KEY (IDKhoa) REFERENCES Khoa(IDKhoa),
 	CONSTRAINT FK_LichLamViec3 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa)
 );
@@ -104,16 +106,16 @@ Create table DichVu (
 CREATE TABLE LichDat(
 	IDLich int identity(1,1), 
 	IDCa INT not null,
-	IDBenhNhan varchar(6) not null,
-	IDBacSi varchar(6) not null,
+	IDBenhNhan varchar(8) not null,
+	IDBacSi varchar(8) not null,
 	IDDichVu int not null,
 	ThuDatLich int, -- cần tạo trigger
 	NgayDatLich date not null default getdate(),
 	TrangThai int not null default 1,
-	CONSTRAINT CK_TrangThai CHECK (TrangThai IN (0, 1)),
 	TinhTrangThanhToan int not null default 0,
-	CONSTRAINT CK_TinhTrangThanhToan CHECK (TinhTrangThanhToan IN (0, 1)),
 	
+	CONSTRAINT CK_TrangThai CHECK (TrangThai IN (0, 1)),
+	CONSTRAINT CK_TinhTrangThanhToan CHECK (TinhTrangThanhToan IN (0, 1)),
 	CONSTRAINT PK_Lich_Dat PRIMARY KEY (IDLich),
 	CONSTRAINT FK_Lich_Dat1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
 	CONSTRAINT FK_Lich_Dat2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
@@ -125,8 +127,9 @@ CREATE TABLE LichDat(
 CREATE TABLE LichNghi(
 	IDLichNghi int identity(1,1), 
 	IDCa INT not null,
-	IDBacSi varchar(6) not null,
-	NgayNghi date not null default getdate(),
+	IDBacSi varchar(8) not null,
+	ThuNghi int,
+	NgayNghi date not null,
 	
 	CONSTRAINT PK_LichNghi PRIMARY KEY (IDLichNghi),
 	CONSTRAINT FK_LichNghi1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
