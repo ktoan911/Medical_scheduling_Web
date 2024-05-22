@@ -1,15 +1,15 @@
 ﻿-- Inserting data into BacSi table
 INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, email, ChucVu, HocVan, Sonamcongtac)
 VALUES 
-('Nguyễn Văn A', 'pass123', 1980, 123456789, N'Nam', 'nva@example.com', 'Trưởng khoa', N'Tiến sĩ', 15),
-('Trần Thị B', 'pass456', 1985, 987654321, N'Nữ', 'ttb@example.com', 'Bác sĩ', N'Tiến sĩ', 10),
-('Phạm Văn C', 'pass789', 1990, 456789123, N'Nam', 'pvc@example.com', 'Phó Khoa', N'Tiến sĩ', 5);
+(N'Nguyễn Văn A', 'pass123', 1980, 123456789, 0, 'nva@example.com', N'Trưởng khoa', N'Tiến sĩ', 15),
+(N'Trần Thị B', 'pass456', 1985, 987654321, 1, 'ttb@example.com', N'Bác sĩ', N'Tiến sĩ', 10),
+(N'Phạm Văn C', 'pass789', 1990, 456789123, 0, 'pvc@example.com', N'Phó Khoa', N'Tiến sĩ', 5);
 
 -- Inserting data into BenhNhan table
 INSERT INTO BenhNhan (hoten, username, [password], namSinh, diaChi, SDT, gioiTinh, email)
 VALUES 
-(N'Nguyễn Thị D', 'nguyenthid', 'bn123', 1988, N'Hà Nội', 987123456, 'Nữ', 'ntd@example.com'),
-(N'Lê Văn E', 'levane', 'bn456', 1975, N'Hồ Chí Minh', 912345678, N'Nam', 'lve@example.com');
+(N'Nguyễn Thị D', 'nguyenthid', 'bn123', 1988, N'Hà Nội', 987123456, 1, 'ntd@example.com'),
+(N'Lê Văn E', 'levane', 'bn456', 1975, N'Hồ Chí Minh', 912345678, 0, 'lve@example.com');
 
 
 -- Inserting data into CaKham table
@@ -35,14 +35,14 @@ VALUES
 ('BS000003', 2);
 
 -- Inserting data into LichLamViec table
-INSERT INTO LichLamViec (IDBacSi, IDKhoa, IDCa, Thu, soLuong)
+INSERT INTO LichLamViec (IDBacSi, IDKhoa, IDCa, Thu)
 VALUES 
-('BS000001', 1, 1, 2, 10),
-('BS000001', 1, 2, 3, 8),
-('BS000002', 1, 1, 4, 10),
-('BS000002', 1, 2, 5, 8),
-('BS000003', 1, 1, 6, 10),
-('BS000003', 1, 2, 7, 8);
+('BS000001', 1, 1, 2),
+('BS000001', 1, 2, 3),
+('BS000002', 1, 1, 4),
+('BS000002', 1, 2, 5),
+('BS000003', 1, 1, 6),
+('BS000003', 1, 2, 7);
 
 -- Inserting data into DichVu table
 INSERT INTO DichVu (IDKhoa, TenDichVu, GiaKham)

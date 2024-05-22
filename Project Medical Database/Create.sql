@@ -21,15 +21,15 @@ create table BacSi (
 	[password] varchar(30) not null,
 	namSinh int not null,
 	SDT int not null,
-	gioiTinh nvarchar(10) not null ,
-	email varchar(30) not null,
-	ChucVu varchar(40) not null,
+	gioiTinh int default 0, -- 0 là nam 1 là nữ
+	email varchar(30) not null UNIQUE,
+	ChucVu nvarchar(40) not null,
 	HocVan nvarchar(40) not null,
 	Sonamcongtac int not null,
 
 	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi),
-	UNIQUE(password),
-	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN ('Trưởng khoa', 'Phó Khoa', 'Bác sĩ', 'Thực tập sinh'))
+	UNIQUE([password]),
+	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN (N'Trưởng khoa', N'Phó Khoa', N'Bác sĩ', N'Thực tập sinh'))
 );
 
 
@@ -41,9 +41,10 @@ create table BenhNhan(
 	[password] varchar(30) not null,
 	namSinh int not null,
 	diaChi nvarchar(50),
-	SDT int not null ,
-	gioiTinh varchar(10) not null,
+	SDT int not null,
+	gioiTinh int default 0, -- 0 là nam 1 là nữ
 	email varchar(30),
+	SoLanHuy int default 0,
 	
 	UNIQUE([username], [password]),
 	CONSTRAINT PK_BenhNhan PRIMARY KEY (IDBenhNhan)
@@ -51,7 +52,7 @@ create table BenhNhan(
 
 create table CaKham(
 	IDCa int identity(1,1) NOT NULL,
-	KhungGio varchar(20) NOT NULL,
+	KhungGio varchar(20) NOT NULL UNIQUE,
 
 	CONSTRAINT PK_CaKham PRIMARY KEY (IDCa)
 );
@@ -83,8 +84,8 @@ CREATE TABLE LichLamViec (
 	IDKhoa int not null,
     IDCa INT not null,
     Thu INT NOT NULL,
-    soLuong INT NOT NULL,
 
+	UNIQUE(IDBacSi,Thu,IDCa),
 	CONSTRAINT CK_Thu CHECK (Thu >= 2 AND Thu <= 7),
 	CONSTRAINT PK_LichLamViec PRIMARY KEY (IDLich),
 	CONSTRAINT FK_LichLamViec1 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
@@ -114,6 +115,7 @@ CREATE TABLE LichDat(
 	TrangThai int not null default 1,
 	TinhTrangThanhToan int not null default 0,
 	
+	UNIQUE(IDBenhNhan, IDCa, NgayDatLich),
 	CONSTRAINT CK_TrangThai CHECK (TrangThai IN (0, 1)),
 	CONSTRAINT CK_TinhTrangThanhToan CHECK (TinhTrangThanhToan IN (0, 1)),
 	CONSTRAINT PK_Lich_Dat PRIMARY KEY (IDLich),
@@ -131,6 +133,7 @@ CREATE TABLE LichNghi(
 	ThuNghi int,
 	NgayNghi date not null,
 	
+	unique(IDBacSi, IDCa, NgayNghi),
 	CONSTRAINT PK_LichNghi PRIMARY KEY (IDLichNghi),
 	CONSTRAINT FK_LichNghi1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
 	CONSTRAINT FK_LichNghi2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
