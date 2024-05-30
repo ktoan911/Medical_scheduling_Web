@@ -20,7 +20,7 @@ create table BacSi (
 	hoten nvarchar(50) not null,
 	[password] varchar(30) not null,
 	namSinh int not null,
-	SDT int not null,
+	SDT char(10) not null,
 	gioiTinh int default 0, -- 0 là nam 1 là nữ
 	email varchar(30) not null UNIQUE,
 	ChucVu nvarchar(40) not null,
@@ -28,9 +28,9 @@ create table BacSi (
 	Sonamcongtac int not null,
 
 	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi),
-	UNIQUE([password]),
 	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN (N'Trưởng khoa', N'Phó Khoa', N'Bác sĩ', N'Thực tập sinh'))
 );
+
 
 
 create table BenhNhan(
@@ -38,17 +38,21 @@ create table BenhNhan(
 	IDBenhNhan AS ('BN'+ RIGHT('000000'+CAST(id as varchar(6)),6)) PERSISTED,
 	hoten nvarchar(50) not null,
 	username varchar(50) not null,
-	[password] varchar(30) not null,
-	namSinh int not null,
+	[password] nvarchar(256) not null,
+	namSinh int,
 	diaChi nvarchar(50),
-	SDT int not null,
+	SDT char(10),
 	gioiTinh int default 0, -- 0 là nam 1 là nữ
-	email varchar(30),
+	email varchar(30) not null,
 	SoLanHuy int default 0,
 	
-	UNIQUE([username], [password]),
+	UNIQUE([username]),
 	CONSTRAINT PK_BenhNhan PRIMARY KEY (IDBenhNhan)
 );
+
+CREATE INDEX idxID_BN on BenhNhan(IDBenhNhan);
+CREATE INDEX idxHoten_BN on BenhNhan(hoten);
+
 
 create table CaKham(
 	IDCa int identity(1,1) NOT NULL,
@@ -57,6 +61,8 @@ create table CaKham(
 	CONSTRAINT PK_CaKham PRIMARY KEY (IDCa)
 );
 
+CREATE INDEX idxCa_Gio on CaKham(KhungGio);
+
 create table Khoa(
 	IDKhoa int identity(1,1) NOT NULL,
 	TenKhoa nvarchar(50) not null,
@@ -64,8 +70,9 @@ create table Khoa(
 	SoLuongBacSi int not null default 0,
 
 	CONSTRAINT PK_Khoa PRIMARY KEY (IDKhoa) 
-
 );
+
+CREATE INDEX idxKhoa_Ten on Khoa(TenKhoa);
 
 create table BacsiKhoa(
 	IDBacSi varchar(8) not null,
