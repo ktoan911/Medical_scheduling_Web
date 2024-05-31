@@ -46,3 +46,41 @@ BEGIN
 END;
 
 go
+
+-- Create the trigger to enforce the constraint
+CREATE TRIGGER trg_LimitHeadAndDeputy
+ON BacsiKhoa
+AFTER INSERT, UPDATE
+AS
+BEGIN
+    -- Declare variables to hold the counts
+    DECLARE @IDKhoa int;
+    DECLARE @ChucVu nvarchar(40);
+
+    -- Get the IDKhoa and ChucVu from the inserted rows
+    SELECT TOP 1 @IDKhoa = IDKhoa, @ChucVu = ChucVu
+    FROM inserted;
+
+    -- Check the number of 'Trưởng khoa' in the department
+    IF @ChucVu = N'Trưởng khoa'
+    BEGIN
+        IF (SELECT COUNT(*) FROM BacsiKhoa WHERE IDKhoa = @IDKhoa AND ChucVu = N'Trưởng khoa') > 1
+        BEGIN
+            ROLLBACK TRANSACTION;
+            RAISERROR ('Each department can have only one "Truong khoa".', 16, 1);
+            RETURN;
+        END
+    END
+
+    -- Check the number of 'Phó Khoa' in the department
+    IF @ChucVu = N'Phó Khoa'
+    BEGIN
+        IF (SELECT COUNT(*) FROM BacsiKhoa WHERE IDKhoa = @IDKhoa AND ChucVu = N'Phó Khoa') > 2
+        BEGIN
+            ROLLBACK TRANSACTION;
+            RAISERROR ('Each department can have only two "Pho Khoa".', 16, 1);
+            RETURN;
+        END
+    END
+END;
+

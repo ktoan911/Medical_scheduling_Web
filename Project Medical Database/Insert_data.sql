@@ -1,9 +1,9 @@
 ﻿-- Inserting data into BacSi table
-INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, email, ChucVu, HocVan, Sonamcongtac)
+INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, email, HocVan, Sonamcongtac)
 VALUES 
-(N'Nguyễn Văn A', 'pass123', 1980, '1234567890', 0, 'nva@example.com', N'Trưởng khoa', N'Tiến sĩ', 15),
-(N'Trần Thị B', 'pass456', 1985, '1234567890', 1, 'ttb@example.com', N'Bác sĩ', N'Tiến sĩ', 10),
-(N'Phạm Văn C', 'pass789', 1990, '1234567890', 0, 'pvc@example.com', N'Phó Khoa', N'Tiến sĩ', 5);
+(N'Nguyễn Văn A', 'pass123', 1980, '1234567890', 0, 'nva@example.com', N'Tiến sĩ', 15),
+(N'Trần Thị B', 'pass456', 1985, '1234567890', 1, 'ttb@example.com', N'Tiến sĩ', 10),
+(N'Phạm Văn C', 'pass789', 1990, '1234567890', 0, 'pvc@example.com', N'Tiến sĩ', 5);
 
 -- Inserting data into BenhNhan table
 INSERT INTO BenhNhan (hoten, username, [password], namSinh, diaChi, SDT, gioiTinh, email)
@@ -26,13 +26,13 @@ VALUES
 (N'Ngoại khoa', N'Chuyên khoa về các bệnh ngoại tổng quát', 2);
 
 -- Inserting data into BacsiKhoa table
-INSERT INTO BacsiKhoa (IDBacSi, IDKhoa)
+INSERT INTO BacsiKhoa (IDBacSi, IDKhoa,ChucVu)
 VALUES 
-('BS000001', 1),
-('BS000002', 1),
-('BS000003', 1),
-('BS000002', 2),
-('BS000003', 2);
+('BS000001', 1, N'Trưởng khoa'),
+('BS000002', 1, N'Phó Khoa'),
+('BS000003', 1, N'Phó Khoa'),
+('BS000002', 2, N'Bác sĩ'),
+('BS000003', 2,N'Bác sĩ');
 
 -- Inserting data into LichLamViec table
 INSERT INTO LichLamViec (IDBacSi, IDKhoa, IDCa, Thu)

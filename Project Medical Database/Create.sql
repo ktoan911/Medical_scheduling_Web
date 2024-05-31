@@ -23,12 +23,10 @@ create table BacSi (
 	SDT char(10) not null,
 	gioiTinh int default 0, -- 0 là nam 1 là nữ
 	email varchar(30) not null UNIQUE,
-	ChucVu nvarchar(40) not null,
 	HocVan nvarchar(40) not null,
 	Sonamcongtac int not null,
 
-	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi),
-	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN (N'Trưởng khoa', N'Phó Khoa', N'Bác sĩ', N'Thực tập sinh'))
+	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi)
 );
 
 
@@ -50,18 +48,12 @@ create table BenhNhan(
 	CONSTRAINT PK_BenhNhan PRIMARY KEY (IDBenhNhan)
 );
 
-CREATE INDEX idxID_BN on BenhNhan(IDBenhNhan);
-CREATE INDEX idxHoten_BN on BenhNhan(hoten);
-
-
 create table CaKham(
 	IDCa int identity(1,1) NOT NULL,
 	KhungGio varchar(20) NOT NULL UNIQUE,
 
 	CONSTRAINT PK_CaKham PRIMARY KEY (IDCa)
 );
-
-CREATE INDEX idxCa_Gio on CaKham(KhungGio);
 
 create table Khoa(
 	IDKhoa int identity(1,1) NOT NULL,
@@ -72,16 +64,16 @@ create table Khoa(
 	CONSTRAINT PK_Khoa PRIMARY KEY (IDKhoa) 
 );
 
-CREATE INDEX idxKhoa_Ten on Khoa(TenKhoa);
-
 create table BacsiKhoa(
 	IDBacSi varchar(8) not null,
 	IDKhoa int not null, 
+	ChucVu nvarchar(40) not null,
 
 	UNIQUE(IDKhoa, IDBacSi),
 	CONSTRAINT PK_BacSiKhoa PRIMARY KEY (IDKhoa,IDBacSi),
 	CONSTRAINT FK_BacSiKhoa1 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
-	CONSTRAINT FK_BacSiKhoa2 FOREIGN KEY (IDKhoa) REFERENCES Khoa(IDKhoa)
+	CONSTRAINT FK_BacSiKhoa2 FOREIGN KEY (IDKhoa) REFERENCES Khoa(IDKhoa),
+	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN (N'Trưởng khoa', N'Phó Khoa', N'Bác sĩ', N'Thực tập sinh'))
 );
 
 

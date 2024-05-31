@@ -75,7 +75,8 @@ CREATE PROCEDURE pRegister_BS
     @ChucVu NVARCHAR(40),
     @HocVan NVARCHAR(40),
     @Sonamcongtac INT,
-    @Email VARCHAR(30)
+    @Email VARCHAR(30),
+	@idkhoa int
 WITH ENCRYPTION
 AS
 BEGIN
@@ -87,13 +88,17 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- Chèn vào bảng BacSi
-        INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, ChucVu, HocVan, Sonamcongtac, email)
-        VALUES (@hoten, @password, @namSinh, @SDT, @gioiTinh, @ChucVu, @HocVan, @Sonamcongtac, @Email);
+        INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, HocVan, Sonamcongtac, email)
+        VALUES (@hoten, @password, @namSinh, @SDT, @gioiTinh, @HocVan, @Sonamcongtac, @Email);
 
         -- Lấy mã bác sĩ mới được chèn
         SELECT @NewIDBacSi = IDBacSi
         FROM BacSi
         WHERE id = SCOPE_IDENTITY();
+
+		--Thêm khoa bác sĩ
+		INSERT INTO BacsiKhoa (IDBacSi, IDKhoa,ChucVu)
+		VALUES (@NewIDBacSi, @idkhoa, @ChucVu);
 
         COMMIT TRANSACTION;
 
@@ -121,15 +126,18 @@ go
 /*
 EXEC pRegister_BS
     @hoten = N'Nguyễn Văn A',
-    @password = 'paspspdword123',
+    @password = 'paspspdweord123',
     @namSinh = 1980,
     @SDT = '0123456789',
     @gioiTinh = 0,
-    @email = 'nvdpwla@example.com',
+    @email = 'nvdpwla@eexample.com',
     @ChucVu = N'Bác sĩ',
     @HocVan = N'Tiến sĩ Y khoa',
-    @Sonamcongtac = 10;
+    @Sonamcongtac = 10,
+	@idkhoa = 1;
 */
+
+select * from BacSi
 
 
 
@@ -157,7 +165,7 @@ Begin
 END
 go
 
---EXEC pLogin_BS @ID_BacSi = 'BS000001', @Password = 'pass123';
+--EXEC pLogin_BS @ID_BacSi = 'BS000009', @Password = 'paspspdweord123';
 
 
 
