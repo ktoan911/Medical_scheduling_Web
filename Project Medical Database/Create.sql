@@ -31,6 +31,7 @@ create table BacSi (
 
 
 
+
 create table BenhNhan(
 	id int identity(1,1),
 	IDBenhNhan AS ('BN'+ RIGHT('000000'+CAST(id as varchar(6)),6)) PERSISTED,
@@ -76,6 +77,11 @@ create table BacsiKhoa(
 	CONSTRAINT CK_ChucVu_Format CHECK (ChucVu IN (N'Trưởng khoa', N'Phó Khoa', N'Bác sĩ', N'Thực tập sinh'))
 );
 
+go
+CREATE INDEX idx_chucvu
+ON BacsiKhoa (ChucVu);
+go
+
 
 CREATE TABLE LichLamViec (
     IDLich INT IDENTITY(1,1) ,
@@ -91,6 +97,11 @@ CREATE TABLE LichLamViec (
 	CONSTRAINT FK_LichLamViec2 FOREIGN KEY (IDKhoa) REFERENCES Khoa(IDKhoa),
 	CONSTRAINT FK_LichLamViec3 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa)
 );
+
+go
+CREATE INDEX idx_idbsLichlamviec
+ON LichLamViec (IDBacSi);
+go
 
 Create table DichVu (
 	IDDichVu int identity(1,1) not null,
@@ -124,7 +135,7 @@ CREATE TABLE LichDat(
 	CONSTRAINT FK_Lich_Dat4 FOREIGN KEY (IDDichVu) REFERENCES DichVu(IDDichVu)
 );
 
-
+/*
 CREATE TABLE LichNghi(
 	IDLichNghi int identity(1,1), 
 	IDCa INT not null,
@@ -138,3 +149,4 @@ CREATE TABLE LichNghi(
 	CONSTRAINT FK_LichNghi2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
 
 );
+*/

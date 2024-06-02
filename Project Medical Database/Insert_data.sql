@@ -58,9 +58,4 @@ VALUES
 (1, 'BN000001', 'BS000001', 1, GETDATE()),
 (2, 'BN000002', 'BS000002', 2, GETDATE());
 
--- Inserting data into LichNghi table
-INSERT INTO LichNghi (IDCa, IDBacSi, ThuNghi, NgayNghi)
-VALUES 
-(1, 'BS000001', 4, '2024-05-16'),
-(2, 'BS000002', 5, '2024-05-17');
 

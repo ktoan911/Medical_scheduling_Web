@@ -123,6 +123,9 @@ BEGIN
 END;
 go
 
+select * from BacSi
+select * from BacsiKhoa
+
 /*
 EXEC pRegister_BS
     @hoten = N'Nguyễn Văn A',

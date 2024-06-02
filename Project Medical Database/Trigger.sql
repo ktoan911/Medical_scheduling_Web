@@ -15,19 +15,6 @@ END;
 
 go
 
---Trigger thêm thứ nghỉ
-
-CREATE TRIGGER trg_ThemThuNghi
-ON LichNghi
-AFTER INSERT
-AS
-BEGIN
-    UPDATE LichNghi 
-    SET ThuNghi = DATEPART(WEEKDAY, inserted.NgayNghi)
-    FROM LichNghi INNER JOIN inserted ON LichNghi.NgayNghi = inserted.NgayNghi;
-END;
-
-go
 
 --Trigger khi thêm 1 bác sĩ thò tự động tăng số lượng bác sĩ của Khoa 
 
@@ -48,7 +35,7 @@ END;
 go
 
 -- Create the trigger to enforce the constraint
-CREATE TRIGGER trg_LimitHeadAndDeputy
+CREATE TRIGGER trg_GioiHanChucVu
 ON BacsiKhoa
 AFTER INSERT, UPDATE
 AS
