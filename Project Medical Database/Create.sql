@@ -25,6 +25,7 @@ create table BacSi (
 	email varchar(30) not null UNIQUE,
 	HocVan nvarchar(40) not null,
 	Sonamcongtac int not null,
+	MoTa nvarchar(max) not null,
 
 	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi)
 );
@@ -135,18 +136,3 @@ CREATE TABLE LichDat(
 	CONSTRAINT FK_Lich_Dat4 FOREIGN KEY (IDDichVu) REFERENCES DichVu(IDDichVu)
 );
 
-/*
-CREATE TABLE LichNghi(
-	IDLichNghi int identity(1,1), 
-	IDCa INT not null,
-	IDBacSi varchar(8) not null,
-	ThuNghi int,
-	NgayNghi date not null,
-	
-	unique(IDBacSi, IDCa, NgayNghi),
-	CONSTRAINT PK_LichNghi PRIMARY KEY (IDLichNghi),
-	CONSTRAINT FK_LichNghi1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
-	CONSTRAINT FK_LichNghi2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
-
-);
-*/

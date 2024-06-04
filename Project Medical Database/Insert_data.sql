@@ -1,9 +1,9 @@
 ﻿-- Inserting data into BacSi table
-INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, email, HocVan, Sonamcongtac)
+INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, email, HocVan, Sonamcongtac, MoTa)
 VALUES 
-(N'Nguyễn Văn A', 'pass123', 1980, '1234567890', 0, 'nva@example.com', N'Tiến sĩ', 15),
-(N'Trần Thị B', 'pass456', 1985, '1234567890', 1, 'ttb@example.com', N'Tiến sĩ', 10),
-(N'Phạm Văn C', 'pass789', 1990, '1234567890', 0, 'pvc@example.com', N'Tiến sĩ', 5);
+(N'Nguyễn Văn A', 'pass123', 1980, '1234567890', 0, 'nva@example.com', N'Tiến sĩ', 15, 'Bác sĩ nội khoa'),
+(N'Trần Thị B', 'pass456', 1985, '1234567890', 1, 'ttb@example.com', N'Tiến sĩ', 10, 'Bác sĩ ngoại khoa'),
+(N'Phạm Văn C', 'pass789', 1990, '1234567890', 0, 'pvc@example.com', N'Tiến sĩ', 5, 'Bác sĩ ngoại khoa');
 
 -- Inserting data into BenhNhan table
 INSERT INTO BenhNhan (hoten, username, [password], namSinh, diaChi, SDT, gioiTinh, email)

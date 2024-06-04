@@ -123,8 +123,7 @@ BEGIN
 END;
 go
 
-select * from BacSi
-select * from BacsiKhoa
+
 
 /*
 EXEC pRegister_BS
@@ -140,7 +139,7 @@ EXEC pRegister_BS
 	@idkhoa = 1;
 */
 
-select * from BacSi
+go
 
 
 
@@ -175,3 +174,4 @@ go
 
 
 
+select * from BenhNhan
