@@ -20,10 +20,17 @@ VALUES
 ('13:00 - 15:00');
 
 -- Inserting data into Khoa table
-INSERT INTO Khoa (TenKhoa, MoTa, SoLuongBacSi)
+INSERT INTO Khoa (TenKhoa, MoTa)
 VALUES 
-(N'Nội khoa', N'Chuyên khoa về các bệnh nội sinh', 3),
-(N'Ngoại khoa', N'Chuyên khoa về các bệnh ngoại tổng quát', 2);
+(N'Khoa Tim mạch', N'Chuyên khoa về các vấn đề tim và hệ thống tuần hoàn'),
+(N'Khoa Phẫu thuật tim mạch', N'Chuyên về phẫu thuật tim mạch, bao gồm cả phẫu thuật cấp cứu và phẫu thuật lập kế hoạch để điều trị các bệnh tim nặng'),
+(N'Khoa Điều trị cấp cứu', N'Đối phó với các tình trạng cấp cứu liên quan đến tim mạch như đau ngực cấp, nhồi máu cơ tim, hay rối loạn nhịp tim'),
+(N'Khoa Y học hạt nhân', N'Sử dụng kỹ thuật hạt nhân để chẩn đoán và điều trị các bệnh tim mạch'),
+(N'Khoa Y học nội soi', N'Sử dụng các phương pháp can thiệp không xâm lấn như thang đo áp dụng hoặc stent để điều trị các vấn đề như tắc nghẽn động mạch vành'),
+(N'Khoa Y học nhịp tim', N'Chuyên về chẩn đoán và điều trị các rối loạn nhịp tim'),
+(N'Khoa Hồi sức tim mạch', N'Hỗ trợ bệnh nhân phục hồi sau khi đã trải qua các biến cố tim mạch hoặc phẫu thuật'),
+(N'Khoa Y học tim trẻ em', N'Chuyên về chẩn đoán và điều trị các vấn đề tim mạch ở trẻ em');
+
 
 -- Inserting data into BacsiKhoa table
 INSERT INTO BacsiKhoa (IDBacSi, IDKhoa,ChucVu)
