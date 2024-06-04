@@ -116,7 +116,7 @@ Create table DichVu (
 
 --CHECK trống lịch bằng cách xem bác sĩ có ca cần tìm không, sau đó check ngày đó bác sĩ đó nghỉ ca nào
 CREATE TABLE LichDat(
-	IDLich int identity(1,1), 
+	IDLichDat int identity(1,1), 
 	IDCa INT not null,
 	IDBenhNhan varchar(8) not null,
 	IDBacSi varchar(8) not null,
@@ -129,7 +129,7 @@ CREATE TABLE LichDat(
 	UNIQUE(IDBenhNhan, IDCa, NgayDatLich),
 	CONSTRAINT CK_TrangThai CHECK (TrangThai IN (0, 1)),
 	CONSTRAINT CK_TinhTrangThanhToan CHECK (TinhTrangThanhToan IN (0, 1)),
-	CONSTRAINT PK_Lich_Dat PRIMARY KEY (IDLich),
+	CONSTRAINT PK_Lich_Dat PRIMARY KEY (IDLichDat),
 	CONSTRAINT FK_Lich_Dat1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
 	CONSTRAINT FK_Lich_Dat2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),
 	CONSTRAINT FK_Lich_Dat3 FOREIGN KEY (IDBenhNhan) REFERENCES BenhNhan(IDBenhNhan),
