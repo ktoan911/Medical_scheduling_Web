@@ -65,6 +65,10 @@ class ListDoctor extends Component {
         const { doctors, searchTerm, hideTitle } = this.state;
         let { language } = this.props;
 
+        
+        if (!doctors || doctors.length === 0) {
+            return <div>Loading...</div>;
+        }
         const filteredDoctors = doctors.filter(item => {
             const fullName = language === LANGUAGES.VI
                 ? removeDiacritics(item.lastName + ' ' + item.firstName).toLowerCase()

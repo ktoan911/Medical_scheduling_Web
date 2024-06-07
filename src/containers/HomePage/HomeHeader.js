@@ -4,32 +4,44 @@ import './HomeHeader.scss';
 import { FormattedMessage } from 'react-intl';
 import { LANGUAGES } from '../../utils';
 import { changeLanguageApp } from '../../store/actions/appActions';
+// Hành động Redux thay đổi ngôn ngữ
 import { withRouter } from 'react-router';
+// Truy cập lịch sử điều hướng
 import { getAllSpecialty } from '../../services/userService';
+// Dịch vụ để lấy danh sách các chuyên khoa
+import Slider from './Slider';
 
+
+// Khởi tạo component 'HomeHeader'
 class HomeHeader extends Component {
     constructor(props) {
         super(props);
         this.state = {
             listSpecialties: [],
+            // Danh sách các chuyên khoa
             isSearchActive: false,
+            // Trạng thái hiện thị thanh tìm kiếm
             placeholderIndex: 0,
         };
     }
 
+// Các phương thức của component
     changeLanguage = (language) => {
         this.props.changeLanguageAppRedux(language);
     }
 
+    // Lấy danh sách các chuyên khoa và thiết lập interval để cập nhật placeholder
     async componentDidMount() {
         this.fetchDataSpecialties();
         this.placeholderInterval = setInterval(this.updatePlaceholder, 3000);
     }
 
+    // Xóa interval khi component bị unmount
     componentWillUnmount() {
         clearInterval(this.placeholderInterval);
     }
 
+    // Lấy danh sách các chuyên khoa từ server
     fetchDataSpecialties = async () => {
         let res = await getAllSpecialty();
         if (res && res.errCode === 0) {
@@ -37,20 +49,24 @@ class HomeHeader extends Component {
         }
     }
 
+    // Bật tắt danh sách tìm kiếm
     toggleSearchList = () => {
         this.setState(prevState => ({ isSearchActive: !prevState.isSearchActive }));
     }
 
+    // Đánh dấu
     handleInputBlur = () => {
         setTimeout(() => {
             this.setState({ isSearchActive: false });
         }, 200); // Đợi 200ms trước khi đánh dấu isSearchActive là false
     }
 
+    // Điều hướng đến thanh chi tiết chuyên khoa
     handleRedirectSpecialty = (item) => {
         this.props.history.push(`/detail-specialty/${item.id}`);
     }
 
+    // Cập nhật placeholdẻr cho input tìm kiếm
     updatePlaceholder = () => {
         const { listSpecialties, placeholderIndex } = this.state;
         if (listSpecialties.length > 0) {
@@ -60,6 +76,7 @@ class HomeHeader extends Component {
     }
 
 
+    // Phương thức hiện thử giao diện người dùng
     render() {
         let language = this.props.language;
         let { listSpecialties, isSearchActive, placeholderIndex } = this.state;
@@ -69,34 +86,70 @@ class HomeHeader extends Component {
         return (
             <>
                 <div className="home-header-container">
+                    {/* Nội dung thanh Header */}
                     <div className="home-header-content">
-                        <div className="left-content">
-                            <i className='fas fa-bars'></i>
+                        <div className="one-content">
+                            {/* <i className='fas fa-bars'></i> */}
                             <div onClick={() => this.props.history.push(`/home`)} className="header-logo"></div>
                         </div>
-                        <div className="center-content">
+                        <div className="two-content">
                             <div className="child-content">
                                 <div onClick={() => this.props.history.push(`/specialty`)}><b><FormattedMessage id="home-header.speciality" /></b></div>
-                                <div className="sub-title"><FormattedMessage id="home-header.searchdoctor" /></div>
-                            </div>
-                            <div className="child-content">
-                                <div onClick={() => this.props.history.push(`/clinic`)}><b><FormattedMessage id="home-header.Health facilities" /></b></div>
-                                <div className="sub-title"><FormattedMessage id="home-header.Choose hospital clinic" /></div>
+                                {/* <div className="sub-title"><FormattedMessage id="home-header.searchdoctor" /></div> */}
                             </div>
                             <div className="child-content">
                                 <div onClick={() => this.props.history.push(`/list-doctor`)}><b><FormattedMessage id="home-header.Doctor" /></b></div>
-                                <div className="sub-title"><FormattedMessage id="home-header.choose a good doctor" /></div>
+                                {/* <div className="sub-title"><FormattedMessage id="home-header.choose a good doctor" /></div> */}
                             </div>
+                            {/*Begin: Fix later */}
                             <div className="child-content">
                                 <div><b><FormattedMessage id="home-header.Checkup package" /></b></div>
-                                <div className="sub-title"><FormattedMessage id="home-header.General health check Support" /></div>
+                                {/* <div className="sub-title"><FormattedMessage id="home-header.General health check Support" /></div> */}
+                            </div>
+                            <div className='child-content'>
+                                <div><b>Chẩn đoán</b></div>
+                                {/* <div className="sub-tiltle">AI dự đoán bệnh</div> */}
+                            </div>
+                            <div className='child-content'>
+                                <div><b>Cá nhân</b></div>
+                                {/* <div className="sub-tiltle">Cập nhật thông tin</div> */}
+                            </div>
+                            {/* End: Fix later */}
+                        </div>
+
+                        <div className='three-content'>
+                            <div className="search">
+                                <i className="fas fa-search"></i>
+                                <input
+                                    type="text"
+                                    placeholder={placeholderSpecialty || 'Tìm chuyên khoa'}
+                                    onFocus={this.toggleSearchList}
+                                    onBlur={this.handleInputBlur}
+                                />
+                                <div className="specialty-search-list">
+                                    {isSearchActive && listSpecialties && listSpecialties.length > 0
+                                        && listSpecialties.map((item, i) => {
+                                            return (
+                                                <div
+                                                    className="list-specialty"
+                                                    key={item.id}
+                                                    onClick={() => this.handleRedirectSpecialty(item)}
+                                                >
+                                                    {item.name}
+                                                </div>
+                                            )
+                                        }
+                                        )
+                                    }
+                                </div>
                             </div>
                         </div>
-                        <div className="right-content">
-                            <div className="support">
+
+                        <div className="four-content">
+                            {/* <div className="support">
                                 <i onClick={() => this.props.history.push(`/support`)} className='fas fa-question-circle'><FormattedMessage id="home-header.Support" /></i>
                                 <p>024-7301-2468</p>
-                            </div>
+                            </div> */}
                             <div className={language === LANGUAGES.VI ?
                                 'language-vi active' : 'language-vi'} >
                                 <span onClick={() => { this.changeLanguage(LANGUAGES.VI) }}>
@@ -109,44 +162,58 @@ class HomeHeader extends Component {
                                     EN
                                 </span>
                             </div>
+                            <div className="homepage_signin">Đăng nhập</div>
                         </div>
-                        {/* <div className="">Dang nhap</div> */}
+                        
+                        
                     </div>
+
                     {this.props.isShowBanner === true &&
                         <div className="home-header-banner">
-                            <div className="content-up">
+                            {/* <div class="slider">
+                            <div class="list">
+                                <div class="item">
+                                    <img src={slide1} alt="slide1"/>
+                                </div>
+                                <div class="item">
+                                    <img src={slide2} alt="slide2"/>
+                                </div>
+                                <div class="item">
+                                    <img src={slide3} alt="slide3"/>
+                                </div>
+                                <div class="item">
+                                    <img src={slide4} alt="slide4"/>
+                                </div>
+                                <div class="item">
+                                    <img src={slide5} alt="slide5"/>
+                                </div>
+                            </div>
+
+                            Nut tien lui
+                            <div class="buttons">
+                                <button id="prev">&lt;</button>
+                                <button id="next">&gt;</button>
+                            </div>
+                            Dau cham bam chuyen slide
+                            <ul class="dots">
+                                <li class="active"></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                                <li></li>
+                            </ul>
+                        </div> */}
+                            <Slider />
+                            {/* <div className="content-up">
                                 <div className="title1">
                                     NỀN TẢNG Y TẾ
                                 </div>
                                 <div className="title2">
                                     CHĂM SÓC SỨC KHỎE TOÀN DIỆN
                                 </div>
-                                <div className="search">
-                                    <i className="fas fa-search"></i>
-                                    <input
-                                        type="text"
-                                        placeholder={placeholderSpecialty || 'Tìm chuyên khoa'}
-                                        onFocus={this.toggleSearchList}
-                                        onBlur={this.handleInputBlur}
-                                    />
-                                    <div className="specialty-search-list">
-                                        {isSearchActive && listSpecialties && listSpecialties.length > 0
-                                            && listSpecialties.map((item, i) => {
-                                                return (
-                                                    <div
-                                                        className="list-specialty"
-                                                        key={item.id}
-                                                        onClick={() => this.handleRedirectSpecialty(item)}
-                                                    >
-                                                        {item.name}
-                                                    </div>
-                                                )
-                                            }
-                                            )}
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="content-down">
+                                
+                            </div> */}
+                            {/* <div className="content-down">
                                 <div className="options" >
                                     <div onClick={() => this.props.history.push(`/specialty`)} className="options-child">
                                         <div className="icon-chuyen-khoa"></div>
@@ -187,7 +254,7 @@ class HomeHeader extends Component {
                                         <div className="text-child">Bài Test sức khỏe</div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     }
                 </div>

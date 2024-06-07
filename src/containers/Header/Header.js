@@ -1,13 +1,18 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react';  
 import { connect } from 'react-redux';
-import _ from 'lodash';
+import _ from 'lodash'; 
+// lodash là thư viện tiện ích của js
 import * as actions from "../../store/actions";
 import Navigator from '../../components/Navigator';
+// Component điều hướng
 import { adminMenu, doctorMenu } from './menuApp';
+// Menu điều dướng cho admin và doctor
 import './Header.scss';
 import { LANGUAGES, USER_ROLE } from '../../utils';
 import { FormattedMessage } from 'react-intl';
+// Hỗ trợ đa ngôn ngữ
 
+// Chứa menuApp để lưu trữ menu điều hướng dựa trên vai trò người dùng
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -16,10 +21,12 @@ class Header extends Component {
         }
     }
 
+    // Thay đổi ngôn ngữ ứng dụng
     handleChangeLanguage = (language) => {
         this.props.changeLanguageAppRedux(language);
     }
 
+    // Xác định menu điều hướng dựa trên vai trò người dùng khi component được mount
     componentDidMount() {
         let { userInfo } = this.props;
         let menu = [];
@@ -37,6 +44,7 @@ class Header extends Component {
         })
     }
 
+    // Hiện thị giao diện người dùng 
     render() {
         const { processLogout, language, userInfo } = this.props;
 
@@ -47,6 +55,7 @@ class Header extends Component {
                     <Navigator menus={this.state.menuApp} />
                 </div>
 
+                {/* Các tùy chọn ngôn ngữ */}
                 <div className="languages">
                     <span className='welcome'><FormattedMessage id="home-header.welcome" />,<span>&nbsp;</span>
                         {userInfo.firstName ? userInfo.firstName : ' '}!</span>
@@ -58,6 +67,7 @@ class Header extends Component {
                         onClick={() => this.handleChangeLanguage(LANGUAGES.EN)}>
                         EN
                     </span>
+
                     {/* nút logout */}
                     <div className="btn btn-logout" onClick={processLogout} title='Log out'>
                         <i className="fas fa-sign-out-alt"></i>
@@ -69,6 +79,8 @@ class Header extends Component {
 
 }
 
+
+// Lấy trạng thái từ Redux store
 const mapStateToProps = state => {
     return {
         isLoggedIn: state.user.isLoggedIn,
@@ -77,6 +89,7 @@ const mapStateToProps = state => {
     };
 };
 
+// Định nghĩa các hành động Redux để thay đổi ngôn ngữ và xử lý logout
 const mapDispatchToProps = dispatch => {
     return {
         processLogout: () => dispatch(actions.processLogout()),

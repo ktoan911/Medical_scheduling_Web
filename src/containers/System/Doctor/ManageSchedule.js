@@ -4,8 +4,9 @@ import { FormattedMessage } from 'react-intl';
 import './ManageSchedule.scss';
 import Select from 'react-select';
 import * as actions from '../../../store/actions'
-import { LANGUAGES } from '../../../utils';
+import { CRUD_ACTIONS, LANGUAGES, dateFormat } from '../../../utils';
 import DatePicker from '../../../components/Input/DatePicker';
+import moment from 'moment';
 import { toast } from 'react-toastify';
 import _ from 'lodash';
 import { saveBulkScheduleDoctor } from '../../../services/userService';
@@ -36,11 +37,9 @@ class ManageSchelude extends Component {
         if (prevProps.allScheduleTime !== this.props.allScheduleTime) {
             let data = this.props.allScheduleTime;
             if (data && data.length > 0) {
-                data.map(item => {
-                    item.isSelected = false;
-                    return item;
-                })
+                data = data.map(item => ({ ...item, isSelected: false }))
             }
+
             this.setState({
                 rangeTime: data
             })
@@ -89,14 +88,15 @@ class ManageSchelude extends Component {
     }
 
     handleSaveSchedule = async () => {
-        let result = [];
         let { rangeTime, selectedOption, currentDate } = this.state;
+        let result = [];
+
         if (!currentDate) {
-            toast.error('Invalid date!');
+            toast.error("Invalid date! ");
             return;
         }
         if (selectedOption && _.isEmpty(selectedOption)) {
-            toast.error('Invalid selected doctor!');
+            toast.error("Invalid selected doctor! ");
             return;
         }
         // conver date
@@ -104,11 +104,11 @@ class ManageSchelude extends Component {
         if (rangeTime && rangeTime.length > 0) {
             let selectedTime = rangeTime.filter(item => item.isSelected === true);
             if (selectedTime.length > 0 && selectedTime) {
-                selectedTime.map(item => {
+                selectedTime.map((schedule, index) => {
                     let object = {};
                     object.doctorId = selectedOption.value;
                     object.date = formatedDate;
-                    object.timeType = item.keyMap;
+                    object.timeType = schedule.keyMap;
                     result.push(object);
                 })
             } else {
