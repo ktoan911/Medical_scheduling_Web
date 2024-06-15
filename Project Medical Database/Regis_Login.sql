@@ -169,9 +169,79 @@ go
 
 --EXEC pLogin_BS @ID_BacSi = 'BS000009', @Password = 'paspspdweord123';
 
+CREATE PROCEDURE RegisterAdmin
+    @Username NVARCHAR(50),
+    @Password NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        -- Start transaction
+        BEGIN TRANSACTION;
+        
+        -- Check if the username already exists
+        IF EXISTS (SELECT 1 FROM Admin WHERE Username = @Username)
+        BEGIN
+            RAISERROR('Username already exists', 16, 1);
+            ROLLBACK TRANSACTION;
+            RETURN;
+        END
+
+        -- Insert the new admin
+        INSERT INTO Admin (Username, Password)
+        VALUES (@Username, @Password);
+
+        -- Commit transaction
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+        -- Rollback transaction in case of error
+        IF @@TRANCOUNT > 0
+        BEGIN
+            ROLLBACK TRANSACTION;
+        END
+        
+        -- Get error details
+        DECLARE @ErrorMessage NVARCHAR(4000) = ERROR_MESSAGE();
+        DECLARE @ErrorSeverity INT = ERROR_SEVERITY();
+        DECLARE @ErrorState INT = ERROR_STATE();
+        
+        -- Rethrow error
+        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
+    END CATCH
+END;
+GO
+
+-- exec RegisterAdmin @Username = 'alo123', @Password = 'alo123'
+
+--Hàm này nếu đăng nhập được in ra 1, còn lỗi in ra 0
+CREATE PROCEDURE LoginAdmin
+    @Username NVARCHAR(50),
+    @Password NVARCHAR(255)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DECLARE @Count INT;
+
+    -- Check if the username and password match
+    SELECT @Count = COUNT(*)
+    FROM Admin
+    WHERE Username = @Username AND Password = @Password;
+
+    IF @Count = 1
+    BEGIN
+        -- Nếu tìm thấy, trả về thành công
+        SELECT 'Login successful' AS Message;
+    END
+    ELSE
+    BEGIN
+        -- Nếu không tìm thấy, trả về thất bại
+        SELECT 'Invalid username or password' AS Message;
+    END
+END;
+GO
+
+--EXEC LoginAdmin @Username= 'alo123', @Password = 'alo123'
 
 
-
-
-
-select * from BenhNhan
