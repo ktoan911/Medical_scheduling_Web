@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Trang-1" id="xaRGh3N69xdBcvp7hbYD">
-        <mxGraphModel dx="2209" dy="624" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="3035" dy="807" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -1025,9 +1025,6 @@
                 </mxCell>
                 <mxCell id="ixLfr3MhimkawC66Bsus-116" value="&lt;u&gt;password&lt;/u&gt;" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
                     <mxGeometry x="162" y="1916" width="104" height="48" as="geometry"/>
-                </mxCell>
-                <mxCell id="40" value="Text" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="-656" y="-232" width="60" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
