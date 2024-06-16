@@ -10,11 +10,11 @@ class About extends Component {
             <div className="section-share section-about">
                 <div className="section-container">
                     <div className="section-header">
-                        <span>Truyền thông nói về Thức Skin</span>
+                        <span>Web của chúng tôi có gì</span>
                     </div>
                     <div className="section-body">
                         <div className="section-left">
-                            <iframe width="50%" height="330px" src="https://www.youtube.com/embed/9PJy_2lt59w" title="Demo Website thiết bị điện tử (Java Spring Boot/themleaf)" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                        <iframe width="50%" height="320px" src="https://www.youtube.com/embed/YdtBEFK_HgI?si=K28f4eraOQ1r5lEu" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
                         </div>
                     </div>
                 </div>

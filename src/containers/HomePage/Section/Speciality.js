@@ -34,7 +34,7 @@ class Speciality extends Component {
             <div className="section-share section-speciality">
                 <div className="section-container">
                     <div className="section-header">
-                        <span>Chuyên khoa phổ biến</span>
+                        <span>Chuyên khoa</span>
                         <button>Xem thêm</button>
                     </div>
                     <div className="section-body">
@@ -42,11 +42,13 @@ class Speciality extends Component {
                             {dataSpecialty && dataSpecialty.length > 0 &&
                                 dataSpecialty.map((item, index) => {
                                     return (
-                                        <div className='slider-customize' key={index}
+                                        <div className='slider-customize'>
+                                            <div className='slider-wrapper wrapper-speciality'  key={index}
                                             onClick={() => this.handleViewDetailSpecialty(item)}>
-                                            <div className="bg-image img-speciality"
-                                                style={{ backgroundImage: `url(${item.image})` }}></div>
-                                            <div className='text'>{item.name}</div>
+                                                <div className="bg-image img-speciality"
+                                                    style={{ backgroundImage: `url(${item.image})` }}></div>
+                                                <div className='text text-speciality'>{item.name}</div>
+                                            </div>
                                         </div>
                                     )
                                 })}

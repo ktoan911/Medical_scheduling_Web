@@ -4,7 +4,9 @@ import Slider from 'react-slick';
 import * as actions from '../../../store/actions';
 import { LANGUAGES } from '../../../utils';
 import { withRouter } from 'react-router';
+
 class OutStandingDoctor extends Component {
+    // Khởi tạo state arrDoctors để lưu danh sách bác sĩ
     constructor(props) {
         super(props);
         this.state = {
@@ -12,10 +14,12 @@ class OutStandingDoctor extends Component {
         }
     }
 
+    // loadTopDoctors: để tại danh sách bác sĩ nổi bật khi component được gắn vào DOM
     componentDidMount() {
         this.props.loadTopDoctors();
     }
 
+    // componentDidUpdate: Cập nhật state arrDoctors khi nhận được danh sách bác sĩ mới từ props
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.topDoctorsRedux !== this.props.topDoctorsRedux) {
             this.setState({
@@ -24,6 +28,7 @@ class OutStandingDoctor extends Component {
         }
     }
 
+    // hanldeViewDetailDoctor: để đi đến trang chi tiết bác sĩ khi nhấn vào bác sĩ
     hanldeViewDetailDoctor = (doctor) => {
         this.props.history.push(`/detail-doctor/${doctor.id}`)
     }
@@ -36,8 +41,8 @@ class OutStandingDoctor extends Component {
             <div className="section-share section-outstandingdoctor">
                 <div className="section-container">
                     <div className="section-header">
-                        <span>Bác sĩ nổi bật tuần qua</span>
-                        <button>Tìm kiếm</button>
+                        <span>Bác sĩ nổi bật</span>
+                        <button>Xem thêm</button>
                     </div>
                     <div className="section-body">
                         <Slider {...this.props.settings}>
@@ -50,13 +55,15 @@ class OutStandingDoctor extends Component {
                                     let nameVi = `${item.positionData.valueVi} | ${item.lastName} ${item.firstName}`
                                     let nameEn = `${item.positionData.valueEn} | ${item.firstName} ${item.lastName}`
                                     return (
-                                        <div className='slider-customize slider-doctor' onClick={() => this.hanldeViewDetailDoctor(item)}>
-                                            <div className="bg-image img-outstandingdoctor"
-                                                style={{ backgroundImage: `url(${imageBase64})` }}>
-                                            </div>
-                                            <div className='text'>
+                                        <div className='slider-customize'>
+                                            <div className='slider-wrapper wrapper-doctor' onClick={() => this.hanldeViewDetailDoctor(item)}>
+                                                <div className="bg-image img-outstandingdoctor"
+                                                    style={{ backgroundImage: `url(${imageBase64})` }}>
+                                                </div>
+                                                <div className='text text-doctor'>
                                                 <div className="">{language === LANGUAGES.VI ? nameVi : nameEn}</div>
                                                 <div className="">{item.Doctor_Infor.specialtyTypeData.name}</div>
+                                            </div>
                                             </div>
                                         </div>
                                     )
@@ -70,6 +77,7 @@ class OutStandingDoctor extends Component {
 
 }
 
+// Lấy dữ liệu từ Redux store và chuyển vào props của component
 const mapStateToProps = state => {
     return {
         isLoggedIn: state.user.isLoggedIn,
@@ -78,10 +86,12 @@ const mapStateToProps = state => {
     };
 };
 
+// Định nghĩa các hàm để dispatch hành động Redux
 const mapDispatchToProps = dispatch => {
     return {
         loadTopDoctors: () => dispatch(actions.fetchTopDoctor())
     };
 };
 
+// Kết nối component với React Router để có thể sử dụng this.prop.history
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OutStandingDoctor))

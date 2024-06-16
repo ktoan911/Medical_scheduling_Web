@@ -17,21 +17,17 @@ class HandBook extends Component {
                     <div className="section-body">
                         <Slider {...this.props.settings}>
                             <div className='slider-customize'>
-                                <div className="bg-image img-handBook"></div>
-                                <div className='text'>Cơ xương khớp</div>
-                            </div>
-                            <div className='slider-customize'>
-                                <div className="bg-image img-handBook"></div>
-                                <div className='text'>Cơ xương khớp</div>
-                            </div>
-                            <div className='slider-customize'>
-                                <div className="bg-image img-handBook"></div>
-                                <div className='text'>Cơ xương khớp</div>
-                            </div>
-                            <div className='slider-customize'>
-                                <div className="bg-image img-handBook"></div>
-                                <div className='text'>Cơ xương khớp</div>
-                            </div>
+                                <div className='slider-handbook'>
+                                <div className='slider-wrapper wrapper-handbook'>
+                                    <div className="bg-image img-handBook1"></div>
+                                    <div className='text'>Cẩm nang 1</div>
+                                </div>
+                                <div className='slider-wrapper wrapper-handbook'>
+                                    <div className="bg-image img-handBook2"></div>
+                                    <div className='text'>Cẩm nang 2</div>
+                                </div>
+                                </div>
+                            </div>  
                         </Slider>
                     </div>
                 </div>

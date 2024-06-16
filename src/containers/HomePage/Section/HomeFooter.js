@@ -8,7 +8,7 @@ class HomeFooter extends Component {
 
         return (
             <div className="home-footer">
-                <p>&copy; 2023 design by <a target='_blank' href="https://www.facebook.com/ThucSkin202" rel="noopener noreferrer">Thức Skin</a></p>
+                <p>&copy; Project siêu vip lớp thầy Phương</p>
             </div>
         )
     }

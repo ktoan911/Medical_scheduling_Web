@@ -9,7 +9,7 @@ import { withRouter } from 'react-router';
 // Truy cập lịch sử điều hướng
 import { getAllSpecialty } from '../../services/userService';
 // Dịch vụ để lấy danh sách các chuyên khoa
-import Slider from './Slider';
+// import Slider from './Slider';
 
 
 // Khởi tạo component 'HomeHeader'
@@ -168,95 +168,12 @@ class HomeHeader extends Component {
                         
                     </div>
 
-                    {this.props.isShowBanner === true &&
+                    {/* {this.props.isShowBanner === true &&
                         <div className="home-header-banner">
-                            {/* <div class="slider">
-                            <div class="list">
-                                <div class="item">
-                                    <img src={slide1} alt="slide1"/>
-                                </div>
-                                <div class="item">
-                                    <img src={slide2} alt="slide2"/>
-                                </div>
-                                <div class="item">
-                                    <img src={slide3} alt="slide3"/>
-                                </div>
-                                <div class="item">
-                                    <img src={slide4} alt="slide4"/>
-                                </div>
-                                <div class="item">
-                                    <img src={slide5} alt="slide5"/>
-                                </div>
-                            </div>
-
-                            Nut tien lui
-                            <div class="buttons">
-                                <button id="prev">&lt;</button>
-                                <button id="next">&gt;</button>
-                            </div>
-                            Dau cham bam chuyen slide
-                            <ul class="dots">
-                                <li class="active"></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                                <li></li>
-                            </ul>
-                        </div> */}
+                            <div className="home-header-banner-space"></div>
                             <Slider />
-                            {/* <div className="content-up">
-                                <div className="title1">
-                                    NỀN TẢNG Y TẾ
-                                </div>
-                                <div className="title2">
-                                    CHĂM SÓC SỨC KHỎE TOÀN DIỆN
-                                </div>
-                                
-                            </div> */}
-                            {/* <div className="content-down">
-                                <div className="options" >
-                                    <div onClick={() => this.props.history.push(`/specialty`)} className="options-child">
-                                        <div className="icon-chuyen-khoa"></div>
-                                        <div className="text-child">Khám chuyên khoa</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-kham-tu-xa"></div>
-                                        <div className="text-child">Khám từ xa</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-kham-tong-quat"></div>
-                                        <div className="text-child">Khám tổng quát</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-xet-nghiem-y-hoc"></div>
-                                        <div className="text-child">Xét nghiệm y học</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-suc-khoe-tinh-than"></div>
-                                        <div className="text-child">Sức khỏe tinh thần</div>
-                                    </div>
-                                </div>
-                                <div className="options">
-                                    <div className="options-child">
-                                        <div className="icon-kham-nha-khoa"></div>
-                                        <div className="text-child">Khám nha khoa</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-goi-phau-thuat"></div>
-                                        <div className="text-child">Gói phẫu thuật</div>
-                                    </div>
-                                    <div onClick={() => this.props.history.push(`/clinic`)} className="options-child">
-                                        <div className="icon-san-pham-y-te"></div>
-                                        <div className="text-child">Sản phẩm y tế</div>
-                                    </div>
-                                    <div className="options-child">
-                                        <div className="icon-bai-test-suc-khoe"></div>
-                                        <div className="text-child">Bài Test sức khỏe</div>
-                                    </div>
-                                </div>
-                            </div> */}
                         </div>
-                    }
+                    } */}
                 </div>
             </>
         )
