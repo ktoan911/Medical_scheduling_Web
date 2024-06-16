@@ -130,10 +130,12 @@ CREATE TABLE LichDat(
 	NgayDatLich date not null default getdate(),
 	TrangThai int not null default 1,
 	TinhTrangThanhToan int not null default 0,
+	TrangThaiHoanThanh int not null default 0,
 	
 	UNIQUE(IDBenhNhan, IDCa, NgayDatLich),
 	CONSTRAINT CK_TrangThai CHECK (TrangThai IN (0, 1)),
 	CONSTRAINT CK_TinhTrangThanhToan CHECK (TinhTrangThanhToan IN (0, 1)),
+	CONSTRAINT CK_TrangThaiHoanThanh CHECK (TrangThaiHoanThanh IN (0, 1)),
 	CONSTRAINT PK_Lich_Dat PRIMARY KEY (IDLich),
 	CONSTRAINT FK_Lich_Dat1 FOREIGN KEY (IDCa) REFERENCES CaKham(IDCa),
 	CONSTRAINT FK_Lich_Dat2 FOREIGN KEY (IDBacSi) REFERENCES BacSi(IDBacSi),

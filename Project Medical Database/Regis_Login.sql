@@ -20,12 +20,9 @@ Begin
 
     ELSE
 	Begin
-		--Băm mật khẩu
-		DECLARE @PasswordHash NVARCHAR(256);
-		SET @PasswordHash = HASHBYTES('SHA2_256', @password);
 
 		INSERT INTO BenhNhan (hoten, username, [password], email)
-		VALUES (@hoten, @user_name, @PasswordHash, @email);
+		VALUES (@hoten, @user_name, @password, @email);
 
 		SELECT 'Registration successful' AS Message;
 	END
@@ -40,16 +37,12 @@ CREATE PROCEDURE pLogin_BN
 WITH ENCRYPTION
 AS 
 Begin
-DECLARE @PasswordHash NVARCHAR(256);
-
-    -- Băm mật khẩu đầu vào để so sánh với mật khẩu đã lưu
-    SET @PasswordHash = HASHBYTES('SHA2_256', @Password);
 
     -- Kiểm tra xem có người dùng nào có tên đăng nhập và mật khẩu băm này không
     IF EXISTS (
         SELECT 1
         FROM BenhNhan
-        WHERE [username] = @Username AND [password] = @PasswordHash
+        WHERE [username] = @Username AND [password] = @Password
     )
     BEGIN
         -- Nếu tìm thấy, trả về thành công
@@ -63,7 +56,7 @@ DECLARE @PasswordHash NVARCHAR(256);
 END
 go
 
---EXEC pLogin_BN @Username = 'tendangnhap', @Password = 'matkhau';
+-- EXEC pLogin_BN @Username = 'phamvanc', @Password = 'password3';
 
 --Đăng kí cho bác sĩ
 CREATE PROCEDURE pRegister_BS
@@ -137,9 +130,11 @@ EXEC pRegister_BS
     @HocVan = N'Tiến sĩ Y khoa',
     @Sonamcongtac = 10,
 	@idkhoa = 1;
-*/
 
 go
+*/
+
+
 
 
 
