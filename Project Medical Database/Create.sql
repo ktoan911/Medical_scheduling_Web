@@ -114,6 +114,7 @@ Create table DichVu (
 	IDKhoa int not null,
 	TenDichVu nvarchar(200) not null,
 	GiaKham int not null,
+	MoTa nvarchar(max) not null,
 
 	CONSTRAINT PK_DV PRIMARY KEY (IDDichVu) ,
 	CONSTRAINT FK_DV FOREIGN KEY (IDKhoa) references Khoa(IDKhoa)
