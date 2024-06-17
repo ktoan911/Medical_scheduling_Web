@@ -31,6 +31,7 @@ create table BacSi (
 	HocVan nvarchar(40) not null,
 	Sonamcongtac int not null,
 	MoTa nvarchar(max) not null,
+	Anh varchar(max) not null default '11111',
 
 	CONSTRAINT PK_BacSi PRIMARY KEY (IDBacSi)
 );
@@ -67,6 +68,7 @@ create table Khoa(
 	TenKhoa nvarchar(50) not null,
 	MoTa  nvarchar(max),
 	SoLuongBacSi int not null default 0,
+	Anh varchar(max) not null default '11111',
 
 	CONSTRAINT PK_Khoa PRIMARY KEY (IDKhoa) 
 );

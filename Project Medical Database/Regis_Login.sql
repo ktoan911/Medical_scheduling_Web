@@ -29,7 +29,7 @@ Begin
 END
 GO
 
-EXEC pRegister_BN @hoten = N'Tên Bệnh Nhân', @user_name = 'tendangnhap', @password = 'matkhau', @email = 'helo@gmail.com';
+--EXEC pRegister_BN @hoten = N'Tên Bệnh Nhân', @user_name = 'tendangnhap', @password = 'matkhau', @email = 'helo@gmail.com';
 
 --Đăng nhập bệnh nhân
 CREATE PROCEDURE pLogin_BN
@@ -56,7 +56,7 @@ Begin
 END
 go
 
-EXEC pLogin_BN @Username = 'tendangnhap', @Password = 'matkhau';
+--EXEC pLogin_BN @Username = 'tendangnhap', @Password = 'matkhau';
 
 
 --Đăng kí cho bác sĩ
@@ -71,7 +71,8 @@ CREATE PROCEDURE pRegister_BS
     @Sonamcongtac INT,
     @Email VARCHAR(30),
 	@idkhoa int,
-	@MoTa nvarchar(max)
+	@MoTa nvarchar(max),
+	@Anh varchar(max)
 WITH ENCRYPTION
 AS
 BEGIN
@@ -83,8 +84,8 @@ BEGIN
         BEGIN TRANSACTION;
 
         -- Chèn vào bảng BacSi
-        INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, HocVan, Sonamcongtac, email, MoTa)
-        VALUES (@hoten, @password, @namSinh, @SDT, @gioiTinh, @HocVan, @Sonamcongtac, @Email, @MoTa);
+        INSERT INTO BacSi (hoten, [password], namSinh, SDT, gioiTinh, HocVan, Sonamcongtac, email, MoTa, Anh)
+        VALUES (@hoten, @password, @namSinh, @SDT, @gioiTinh, @HocVan, @Sonamcongtac, @Email, @MoTa, @Anh);
 
         -- Lấy mã bác sĩ mới được chèn
         SELECT @NewIDBacSi = IDBacSi
@@ -119,8 +120,8 @@ END;
 go
 
 
-
 /*
+
 EXEC pRegister_BS
     @hoten = N'Nguyễn Văn A',
     @password = 'paspspdweord123',
@@ -132,11 +133,12 @@ EXEC pRegister_BS
     @HocVan = N'Tiến sĩ Y khoa',
     @Sonamcongtac = 10,
 	@idkhoa = 1,
-	@MoTa = 'abcxyz';
+	@MoTa = 'abcxyz',
+	@Anh = '1112121';
 	
-
-go
 */
+go
+
 
 
 
@@ -168,7 +170,7 @@ go
 
 
 
---EXEC pLogin_BS @ID_BacSi = 'BS000033', @Password = 'paspspdweord123';
+--EXEC pLogin_BS @ID_BacSi = 'BS000031', @Password = 'paspspdweord123';
 
 CREATE PROCEDURE RegisterAdmin
     @Username NVARCHAR(50),
