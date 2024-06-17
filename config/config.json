@@ -1,28 +1,45 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "bookingcare",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "logging": false,
+    "username": "sa",
+    "password": "12345678",
+    "database": "Medical_Schedule",
+    "host": "NHATQUANG\\MSSQLSERVER01",
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "trustServerCertificate": true
+      }
+    },
     "query": {
       "raw": true
     },
     "timezone": "+07:00"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "sa",
+    "password": "12345678",
+    "database": "Medical_Schedule",
+    "host": "NHATQUANG\\MSSQLSERVER01",
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "trustServerCertificate": true
+      }
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
-    "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "sa",
+    "password": "12345678",
+    "database": "Medical_Schedule",
+    "host": "NHATQUANG\\MSSQLSERVER01",
+    "dialect": "mssql",
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "trustServerCertificate": true
+      }
+    }
   }
 }

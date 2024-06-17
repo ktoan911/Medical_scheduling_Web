@@ -16,11 +16,12 @@ let postBookAppointment = async (data) => {
             || !data.phoneNumber) {
             return {
                 errCode: 1,
-                message: 'Missing requied parameters!',
+                message: 'Missing required parameters!',
             }
         } else {
             let token = uuidv4();
 
+            // Send verification email
             await emailService.sendEmail({
                 reciverEmail: data.email,
                 patientName: data.fullName,
@@ -28,40 +29,52 @@ let postBookAppointment = async (data) => {
                 doctorName: data.doctorName,
                 language: data.language,
                 redirectLink: buildUrlEmail(data.doctorId, token)
-            })
+            });
 
-            //upsert 
-            let user = await db.User.findOrCreate({
+            // Find or create user (patient)
+            let [user, created] = await db.BenhNhan.findOrCreate({
                 where: { email: data.email },
                 defaults: {
-                    email: data.email,
-                    roleId: 'role_patient',
-                    address: data.address,
-                    phoneNumber: data.phoneNumber,
-                    gender: data.selectedGender,
-                    firstName: data.fullName
+                    username: data.email, // Example: Use email as username
+                    password: 'default_password', // Example: Provide a default password
+                    namSinh: data.birthYear, // Example: Provide birthYear from data
+                    diaChi: data.address,
+                    SDT: data.phoneNumber,
+                    gioiTinh: data.selectedGender,
+                    hoten: data.fullName,
+                    email: data.email
                 }
-            })
-            //creare data booking
-            if (user[0] && user) {
-                await db.Booking.findOrCreate({
-                    where: { token: token },
-                    defaults: {
-                        statusId: 'S1',
-                        doctorId: data.doctorId,
-                        patientId: user[0].id,
-                        date: data.date,
-                        timeType: data.timeType,
-                        token: token
-                    }
-                })
+            });
+
+            // Find doctor and time slot (CaKham)
+            let doctor = await db.BacSi.findOne({
+                where: { IDBacSi: data.doctorId }
+            });
+            let timeSlot = await db.CaKham.findOne({
+                where: { IDCa: data.timeType }
+            });
+
+            // Create booking record
+            if (user && doctor && timeSlot) {
+                await db.LichDat.create({
+                    IDBacSi: data.doctorId,
+                    IDBenhNhan: user.IDBenhNhan,
+                    IDDichVu: data.serviceId, // Example: Provide serviceId from data
+                    IDCa: data.timeType,
+                    NgayDatLich: data.date,
+                    TrangThai: 1, // Example: Set default status
+                    TinhTrangThanhToan: 0, // Example: Set default payment status
+                    ThuDatLich: null // Example: Set weekday if needed
+                });
             }
+
             return {
                 errCode: 0,
                 message: 'OK',
             }
         }
     } catch (error) {
+        console.error(error);
         return {
             errCode: -1,
             message: 'Error from server...',
@@ -74,20 +87,23 @@ let postVerifyBookAppointmentService = async (data) => {
         if (!data.token || !data.doctorId) {
             return {
                 errCode: 1,
-                message: 'Missing requied parameters!',
+                message: 'Missing required parameters!',
             }
         } else {
-            let appointment = await db.Booking.findOne({
+            let appointment = await db.LichDat.findOne({
                 where: {
-                    doctorId: data.doctorId,
+                    IDBacSi: data.doctorId,
                     token: data.token,
-                    statusId: 'S1'
+                    TrangThai: 1 // Example: Only find appointments with status 'S1'
                 },
-                raw: false  // object of resquelize || raw = true: object JavaScript
-            })
+                include: [
+                    { model: db.BenhNhan, as: 'benhnhan' }
+                ]
+            });
+
             if (appointment) {
-                appointment.statusId = 'S2',
-                    await appointment.save();
+                appointment.TrangThai = 2; // Update status to 'S2'
+                await appointment.save();
             }
 
             return {
@@ -97,6 +113,7 @@ let postVerifyBookAppointmentService = async (data) => {
             }
         }
     } catch (error) {
+        console.error(error);
         return {
             errCode: -1,
             message: 'Error from server...',

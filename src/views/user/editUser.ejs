@@ -14,38 +14,26 @@
         <form action="/update-user" method="post" class="row g-3 col-md-8 mx-auto">
             <h3 class="col-12 mt-4">Edit user</h3>
             <div class="col-6">
-                <label for="inputAddress" class="form-label">First name</label>
-                <input value="<%= data.firstName %>" type="text" class="form-control" name="firstName" placeholder="">
-            </div>
-            <div class="col-6">
-                <label for="inputAddress" class="form-label">Last name</label>
-                <input value="<%= data.lastName %>" type=" text" class="form-control" name="lastName" placeholder="">
+                <label for="firstName" class="form-label">Name</label>
+                <input value="<%= data.hoten %>" type="text" class="form-control" name="hoten" id="Name">
             </div>
             <div class="col-md-3">
-                <label for="inputAddress2" class="form-label">Address</label>
-                <input value="<%= data.address %>" type="text" class="form-control" name="address" placeholder="">
+                <label for="address" class="form-label">Address</label>
+                <input value="<%= data.diaChi %>" type="text" class="form-control" name="diaChi" id="address">
             </div>
             <div class="col-md-3">
-                <label for="inputAddress2" class="form-label">Phone number</label>
-                <input value="<%= data.phoneNumber %>" type="text" class="form-control" name="phoneNumber"
-                    placeholder="">
+                <label for="phoneNumber" class="form-label">Phone number</label>
+                <input value="<%= data.SDT %>" type="text" class="form-control" name="SDT" id="phoneNumber">
             </div>
             <div class="col-md-3">
-                <label for="inputState" class="form-label">Sex:</label>
-                <select value="<%= data.gender %>" name="gender" id="inputState" class="form-select">
-                    <option value="1" selected>Female</option>
-                    <option value="0">Male</option>
+                <label for="gender" class="form-label">Sex:</label>
+                <select name="gioiTinh" id="gender" class="form-select">
+                    <option value="0" <%= data.gioiTinh === 0 ? 'selected' : '' %>>Male</option>
+                    <option value="1" <%= data.gioiTinh === 1 ? 'selected' : '' %>>Female</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label for="inputState" class="form-label">Role:</label>
-                <select value="<%= data.roleId %>" name="roleId" id="inputState" class="form-select">
-                    <option value="role_admin" selected>Admin</option>
-                    <option value="role_doctor">Doctor</option>
-                    <option value="role_patient">Patient</option>
-                </select>
-            </div>
-            <input hidden value="<%= data.id %>" type="text" name="id">
+            
+            <input hidden value="<%= data.IDBenhNhan %>" type="text" name="IDBenhNhan">
 
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Update</button>

@@ -13,10 +13,10 @@ const initApiRoute = (app) => {
     router.post('/api/create-user', ApiUserController.handleCreateUser);
     router.put('/api/edit-user', ApiUserController.handleEditUser);
     router.delete('/api/delete-user', ApiUserController.handleDeleteUser);
-    router.get('/api/allcode', ApiUserController.getAllCode);
+    // router.get('/api/allcode', ApiUserController.getAllCode);
 
     router.get('/api/top-doctor-home', doctorController.getTopDoctorHome);
-    router.get('/api/get-all-doctors', doctorController.getAllDoctors);
+    router.get('/api/get-all-doctors' , doctorController.getAllDoctors);
     router.post('/api/save-info-doctor', doctorController.postInfoDoctor);
     router.get('/api/get-detail-doctor-by-id', doctorController.getDetailDoctorById);
     router.get('/api/get-all-doctor-infor', doctorController.getAllDoctorInfor);

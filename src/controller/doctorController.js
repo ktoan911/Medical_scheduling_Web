@@ -4,18 +4,18 @@ let getTopDoctorHome = async (req, res) => {
     let limit = req.query.limit;
     if (!limit) limit = 10;
     try {
-        let response = await doctorService.getTopDoctorHome(+limit); // Use a different variable name to avoid conflict with the response object
+        let response = await doctorService.getTopDoctorHome(+limit);
         return res.status(200).json({
             errCode: 0,
             message: 'OK',
-            data: response // Use "data" field to send the response from the doctorService
+            data: response
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ // Use 500 status code for server error
+        return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
-            error: error // Send the error object in the response
+            error: error
         });
     }
 };
@@ -30,10 +30,10 @@ let getAllDoctors = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ // Use 500 status code for server error
+        return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
-            error: error // Send the error object in the response
+            error: error
         });
     }
 }
@@ -48,10 +48,10 @@ let getAllDoctorInfor = async (req, res) => {
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ // Use 500 status code for server error
+        return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
-            error: error // Send the error object in the response
+            error: error
         });
     }
 }
@@ -121,6 +121,7 @@ let getExtraInforDoctorById = async (req, res) => {
         return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
+            error: error
         });
     }
 }
@@ -134,6 +135,7 @@ let getProfileDoctorById = async (req, res) => {
         return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
+            error: error
         });
     }
 }
@@ -147,6 +149,7 @@ let getListPatientsForDoctor = async (req, res) => {
         return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
+            error: error
         });
     }
 }
@@ -160,6 +163,7 @@ let sendRemedy = async (req, res) => {
         return res.status(500).json({
             errCode: -1,
             message: 'Error from server...',
+            error: error
         });
     }
 }

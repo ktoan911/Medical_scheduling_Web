@@ -1,23 +1,20 @@
-const db = require('../../models/index');
-var bcrypt = require('bcryptjs');
-var salt = bcrypt.genSaltSync(10);
-const connection = require('../config/connectDBWithQuery');
+const db = require('../../models');
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 
 let hashUserPassword = async (password) => {
-    return await bcrypt.hashSync(password, salt);
-}
+    return await bcrypt.hash(password, salt);
+};
 
 let handleUserLogin = async (email, password) => {
     let userData = {};
 
     try {
         let isExist = await checkUserEmail(email);
-        if (isExist) {
-            let user = await db.User.findOne({
-                attributes: ['id', 'email', 'roleId', 'password', 'firstName', 'lastName'],
-                where: {
-                    email: email,
-                },
+        if (isExist.errCode === 0) {
+            let user = await db.BenhNhan.findOne({
+                attributes: ['IDBenhNhan', 'email', 'password', 'hoten', 'username'],
+                where: { email },
                 raw: true
             });
             if (user) {
@@ -25,7 +22,6 @@ let handleUserLogin = async (email, password) => {
                 if (check) {
                     userData.errCode = 0;
                     userData.errMsg = 'ok';
-
                     delete user.password;
                     userData.user = user;
                 } else {
@@ -34,29 +30,25 @@ let handleUserLogin = async (email, password) => {
                 }
             } else {
                 userData.errCode = 1;
-                userData.errMsg = 'User is not found';
+                userData.errMsg = 'User not found';
             }
         } else {
             userData.errCode = 2;
-            userData.errMsg = 'User is not found';
+            userData.errMsg = 'User not found';
         }
     } catch (error) {
+        console.error(error);
         userData.errCode = 3;
         userData.errMsg = 'Error occurred';
     }
 
     return userData;
-}
-
+};
 
 let checkUserEmail = async (email) => {
+    let userData = {};
     try {
-        userData = {};
-        let user = await db.User.findOne({
-            where: {
-                email: email
-            }
-        })
+        let user = await db.BenhNhan.findOne({ where: { email } });
         if (user) {
             userData.errCode = 0;
             userData.errMsg = 'ok';
@@ -64,168 +56,138 @@ let checkUserEmail = async (email) => {
             return userData;
         } else {
             userData.errCode = 1;
-            userData.errMsg = 'Your email is required or exists.';
+            userData.errMsg = 'Email not found';
             return userData;
         }
     } catch (error) {
-        console.error(error)
+        console.error(error);
+        return {
+            errCode: -1,
+            errMsg: 'An error occurred'
+        };
     }
-}
+};
 
 const getAllUsers = async (userId) => {
     try {
         let users = null;
         if (userId === 'All') {
-            users = await db.User.findAll({
+            users = await db.BenhNhan.findAll({
                 attributes: {
                     exclude: ['password']
                 }
             });
         } else if (userId) {
-            users = await db.User.findOne({
-                where: { id: userId },
+            users = await db.BenhNhan.findOne({
+                where: { IDBenhNhan: userId },
                 attributes: {
                     exclude: ['password']
-                },
+                }
             });
         }
         return users;
     } catch (error) {
-        console.log('Error:', error);
+        console.error(error);
         throw error;
     }
 };
 
 let createUser = async (data) => {
     try {
-        // Check if email exists
         let check = await checkUserEmail(data.email);
         if (check.errCode === 0) {
-            return {
-                errCode: 1,
-                errMsg: 'Email already exists'
-            };
+            return { errCode: 1, errMsg: 'Email already exists' };
         } else {
             let hashPasswordBcrypt = await hashUserPassword(data.password);
-            await db.User.create({
+            await db.BenhNhan.create({
                 email: data.email,
                 password: hashPasswordBcrypt,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                address: data.address,
-                gender: data.gender,
-                roleId: data.roleId,
-                positionId: data.positionId,
-                phoneNumber: data.phoneNumber,
-                image: data.avatar
+                hoten: data.hoten,
+                username: data.username,
+                namSinh: data.namSinh,
+                diaChi: data.diaChi,
+                SDT: data.SDT,
+                gioiTinh: data.gioiTinh,
+                SoLanHuy: data.SoLanHuy
             });
-            return {
-                errCode: 0,
-                message: 'ok'
-            }
-        }
-
-    } catch (error) {
-        // Handle the error appropriately (e.g., log, return an error message)
-        console.error(error);
-        throw error; // Rethrow the error to be handled by the caller
-    }
-}
-
-let deleteUserById = async (userId) => {
-    try {
-        let user = await db.User.findOne({
-            where: { id: userId },
-            raw: false
-        });
-        if (user) {
-            await db.User.destroy({
-                where: { id: userId },
-            });
-            return {
-                errCode: 0,
-                message: 'User deleted successfully'
-            };
-        } else {
-            return {
-                errCode: 1,
-                message: 'User not found'
-            };
+            return { errCode: 0, message: 'ok' };
         }
     } catch (error) {
         console.error(error);
-        return {
-            errCode: -1,
-            message: 'An error occurred'
-        };
-    }
-}
-
-let updateUserById = async (data) => {
-    try {
-        if (!data.id) {
-            return {
-                errCode: 2,
-                message: 'Id is required'
-            };
-        }
-        let user = await db.User.findOne({
-            where: { id: data.id },
-            raw: false
-        });
-
-        if (user) {
-            user.firstName = data.firstName;
-            user.lastName = data.lastName;
-            user.address = data.address;
-            user.gender = data.gender;
-            user.roleId = data.roleId;
-            user.phoneNumber = data.phoneNumber;
-            user.positionId = data.positionId;
-            user.image = data.avatar;
-
-            await user.save();
-            return {
-                errCode: 0,
-                message: 'User updated successfully'
-            };
-        } else {
-            return {
-                errCode: 1,
-                message: 'User is not found'
-            };
-        }
-    } catch (error) {
-        console.error(error);
-        return {
-            errCode: -1,
-            message: 'An error occurred'
-        };
+        throw error;
     }
 };
 
-let getAllCodeService = async (typeInput) => {
+let deleteUserById = async (userId) => {
     try {
-        let res = {};
-        if (!typeInput) {
-            res.errCode = 1;
-            res.errMsg = 'Missing required field ' + typeInput;
-            return res;
-        } else {
-            let allcode = await db.Allcode.findAll({
-                where: {
-                    type: typeInput
-                }
+        let user = await db.BenhNhan.findOne({
+            where: { IDBenhNhan: userId },
+            raw: false
+        });
+        if (user) {
+            await db.BenhNhan.destroy({
+                where: { IDBenhNhan: userId },
             });
-            res.errCode = 0;
-            res.data = allcode
+            return { errCode: 0, message: 'User deleted successfully' };
+        } else {
+            return { errCode: 1, message: 'User not found' };
         }
-        return res;
     } catch (error) {
-
+        console.error(error);
+        return { errCode: -1, message: 'An error occurred' };
     }
-}
+};
 
+let updateUserById = async (data) => {
+    try {
+        if (!data.IDBenhNhan) {
+            return { errCode: 2, message: 'Id is required' };
+        }
+        let user = await db.BenhNhan.findOne({
+            where: { IDBenhNhan: data.IDBenhNhan },
+            raw: false
+        });
+
+        if (user) {
+            user.hoten = data.hoten;
+            user.username = data.username;
+            user.namSinh = data.namSinh;
+            user.diaChi = data.diaChi;
+            user.SDT = data.SDT;
+            user.gioiTinh = data.gioiTinh;
+            user.SoLanHuy = data.SoLanHuy;
+
+            await user.save();
+            return { errCode: 0, message: 'User updated successfully' };
+        } else {
+            return { errCode: 1, message: 'User not found' };
+        }
+    } catch (error) {
+        console.error(error);
+        return { errCode: -1, message: 'An error occurred' };
+    }
+};
+
+// let getAllCodeService = async (typeInput) => {
+//     try {
+//         let res = {};
+//         if (!typeInput) {
+//             res.errCode = 1;
+//             res.errMsg = 'Missing required field ' + typeInput;
+//             return res;
+//         } else {
+//             let allcode = await db.Allcode.findAll({
+//                 where: { type: typeInput }
+//             });
+//             res.errCode = 0;
+//             res.data = allcode;
+//         }
+//         return res;
+//     } catch (error) {
+//         console.error(error);
+//         return { errCode: -1, errMsg: 'An error occurred' };
+//     }
+// };
 
 module.exports = {
     handleUserLogin,
@@ -234,5 +196,5 @@ module.exports = {
     createUser,
     deleteUserById,
     updateUserById,
-    getAllCodeService
-}
+    // getAllCodeService
+};

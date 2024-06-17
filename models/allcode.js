@@ -1,34 +1,44 @@
 'use strict';
-const {
-    Model
-} = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
+const { Model, DataTypes } = require('sequelize');
+
+module.exports = (sequelize) => {
     class Allcode extends Model {
-        /**
-         * Helper method for defining associations.
-         * This method is not a part of Sequelize lifecycle.
-         * The `models/index` file will call this method automatically.
-         */
         static associate(models) {
-            Allcode.hasMany(models.User, { foreignKey: 'positionId', targetKey: 'keyMap', as: 'positionData' })
-            Allcode.hasMany(models.User, { foreignKey: 'gender', targetKey: 'keyMap', as: 'genderData' })
-            Allcode.hasMany(models.Schedule, { foreignKey: 'timeType', as: 'timeTypeData' })
-
-            Allcode.hasMany(models.Doctor_Infor, { foreignKey: 'priceId', as: 'priceTypeData' })
-            Allcode.hasMany(models.Doctor_Infor, { foreignKey: 'provinceId', as: 'provinceTypeData' })
-            Allcode.hasMany(models.Doctor_Infor, { foreignKey: 'paymentId', as: 'paymenTypeData' })
-
-            Allcode.hasMany(models.Booking, { foreignKey: 'timeType', as: 'timeTypeDataPatient' })
+            // Define associations here
+            Allcode.hasMany(models.BacSi, { foreignKey: 'gioiTinh', targetKey: 'keyMap', as: 'genderData' });
+            Allcode.hasMany(models.BenhNhan, { foreignKey: 'gioiTinh', targetKey: 'keyMap', as: 'genderDataPatient' });
+            Allcode.hasMany(models.CaKham, { foreignKey: 'KhungGio', targetKey: 'keyMap', as: 'timeTypeData' });
+            Allcode.hasMany(models.LichDat, { foreignKey: 'IDCa', targetKey: 'keyMap', as: 'timeTypeDataPatient' });
         }
     }
-    Allcode.init({
-        keyMap: DataTypes.STRING,
-        type: DataTypes.STRING,
-        valueEn: DataTypes.STRING,
-        valueVi: DataTypes.STRING,
-    }, {
-        sequelize,
-        modelName: 'Allcode',
-    });
+
+    Allcode.init(
+        {
+            keyMap: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                primaryKey: true
+            },
+            type: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            valueEn: {
+                type: DataTypes.STRING,
+                allowNull: false
+            },
+            valueVi: {
+                type: DataTypes.STRING,
+                allowNull: false
+            }
+        },
+        {
+            sequelize,
+            modelName: 'Allcode',
+            tableName: 'Allcode', // Tên của bảng trong cơ sở dữ liệu
+            timestamps: false // Không sử dụng timestamps (created_at, updated_at)
+        }
+    );
+
     return Allcode;
 };
