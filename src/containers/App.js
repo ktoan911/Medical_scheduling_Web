@@ -21,6 +21,7 @@ import ListHomeSpecialty from './Patient/Specialty/ListHomeSpecialty';
 import ListClinic from './Patient/Clinic/ListClinic';
 import ListDoctor from './Patient/Doctor/ListDoctor';
 import Support from './Patient/Support';
+import Predict from './Patient/Prediction/Predict';
 
 class App extends Component {
 
@@ -62,6 +63,7 @@ class App extends Component {
                                     <Route path={'/specialty'} component={ListHomeSpecialty} />
                                     <Route path={'/clinic'} component={ListClinic} />
                                     <Route path={'/list-doctor'} component={ListDoctor} />
+                                    <Route path={'/predict'} component={Predict} />
 
                                     <Route path={path.VERIFY_EMAIL_BOOKING} component={VerifyEmail} />
                                     <Route path={path.SUPPORT} component={Support} />

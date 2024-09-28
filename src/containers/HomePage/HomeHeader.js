@@ -63,7 +63,7 @@ class HomeHeader extends Component {
 
     // Điều hướng đến thanh chi tiết chuyên khoa
     handleRedirectSpecialty = (item) => {
-        this.props.history.push(`/detail-specialty/${item.id}`);
+        this.props.history.push(`/detail-specialty/${item.IDKhoa}`);
     }
 
     // Cập nhật placeholdẻr cho input tìm kiếm
@@ -75,7 +75,7 @@ class HomeHeader extends Component {
         }
     }
 
-
+    
     // Phương thức hiện thử giao diện người dùng
     render() {
         let language = this.props.language;
@@ -107,7 +107,7 @@ class HomeHeader extends Component {
                                 {/* <div className="sub-title"><FormattedMessage id="home-header.General health check Support" /></div> */}
                             </div>
                             <div className='child-content'>
-                                <div><b>Chẩn đoán</b></div>
+                                <div onClick={() => this.props.history.push(`/predict`)}><b>Chẩn đoán</b></div>
                                 {/* <div className="sub-tiltle">AI dự đoán bệnh</div> */}
                             </div>
                             <div className='child-content'>
@@ -132,10 +132,10 @@ class HomeHeader extends Component {
                                             return (
                                                 <div
                                                     className="list-specialty"
-                                                    key={item.id}
+                                                    key={item.IDKhoa}
                                                     onClick={() => this.handleRedirectSpecialty(item)}
                                                 >
-                                                    {item.name}
+                                                    {item.TenKhoa}
                                                 </div>
                                             )
                                         }

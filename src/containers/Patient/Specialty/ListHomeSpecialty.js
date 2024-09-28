@@ -18,7 +18,7 @@ class ListHomeSpecialty extends Component {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
         this.fetchSpecialties();
     }
 
@@ -31,13 +31,13 @@ class ListHomeSpecialty extends Component {
         }
     }
 
-    async componentDidUpdate(prevProps, prevState) {
-        this.fetchSpecialties();
-    }
+    // async componentDidUpdate(prevProps, prevState) {
+    //     this.fetchSpecialties();
+    // }
 
     handleRedirectDetailSpecialty = (item) => {
         if (this.props.history) {
-            this.props.history.push(`/detail-specialty/${item.id}`)
+            this.props.history.push(`/detail-specialty/${item.IDKhoa}`)
         }
     }
 
@@ -50,9 +50,12 @@ class ListHomeSpecialty extends Component {
         const { language } = this.props;
 
         const filteredSpecialties = specialties.filter(item => {
-            const name = removeDiacritics(item.name.toLowerCase()); // Loại bỏ dấu và chuyển thành chữ thường
-            const searchValue = removeDiacritics(searchTerm.toLowerCase()); // Loại bỏ dấu và chuyển thành chữ thường
-            return name.includes(searchValue);
+            if (item.TenKhoa) {
+                const name = removeDiacritics(item.TenKhoa.toLowerCase()); // Remove diacritics and convert to lowercase
+                const searchValue = removeDiacritics(searchTerm.toLowerCase()); // Remove diacritics and convert to lowercase
+                return name.includes(searchValue);
+            }
+            return false; // If item.name is undefined or null, filter it out
         });
 
         return (
@@ -70,19 +73,19 @@ class ListHomeSpecialty extends Component {
                             onChange={this.handleSearchChange}
                         />
                     </div>
-                    {filteredSpecialties.length > 0 ? (
+                    {filteredSpecialties.length > 0 ? 
+                    (
                         filteredSpecialties.map((item, index) => (
-                            <div className="content" key={item.id}>
+                            <div className="content" key={item.IDKhoa}>
                                 <div className='i-img' onClick={() => this.handleRedirectDetailSpecialty(item)}>
                                     {item.image && (
-                                        <img className='img' src={item.image} alt={item.name} />
+                                        <img className='img' src={item.image} alt={item.TenKhoa} />
                                     )}
                                 </div>
                                 <div onClick={() => this.handleRedirectDetailSpecialty(item)}
-                                    className='i-name'>{item.name}</div>
+                                    className='i-name'>{item.TenKhoa}</div>
                             </div>
-                        ))
-                    ) : (
+                        ))) : (
                         <div className="no-result-text">
                             {language === LANGUAGES.EN
                                 ? "No matching specialties found. Please enter more general keywords."

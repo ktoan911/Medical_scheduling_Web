@@ -23,7 +23,7 @@ class Speciality extends Component {
 
     handleViewDetailSpecialty = (item) => {
         if (this.props.history) {
-            this.props.history.push(`/detail-specialty/${item.id}`)
+            this.props.history.push(`/detail-specialty/${item.IDKhoa}`)
         }
     }
 
@@ -47,7 +47,7 @@ class Speciality extends Component {
                                             onClick={() => this.handleViewDetailSpecialty(item)}>
                                                 <div className="bg-image img-speciality"
                                                     style={{ backgroundImage: `url(${item.image})` }}></div>
-                                                <div className='text text-speciality'>{item.name}</div>
+                                                <div className='text text-speciality'>{item.TenKhoa}</div>
                                             </div>
                                         </div>
                                     )

@@ -30,7 +30,7 @@ class OutStandingDoctor extends Component {
 
     // hanldeViewDetailDoctor: để đi đến trang chi tiết bác sĩ khi nhấn vào bác sĩ
     hanldeViewDetailDoctor = (doctor) => {
-        this.props.history.push(`/detail-doctor/${doctor.id}`)
+        this.props.history.push(`/detail-doctor/${doctor.IDBacSi}`)
     }
 
     render() {
@@ -52,18 +52,17 @@ class OutStandingDoctor extends Component {
                                     if (item.image) {
                                         imageBase64 = new Buffer(item.image, 'base64').toString('binary');
                                     }
-                                    let nameVi = `${item.positionData.valueVi} | ${item.lastName} ${item.firstName}`
-                                    let nameEn = `${item.positionData.valueEn} | ${item.firstName} ${item.lastName}`
+                                    let name = `${item.lastName} ${item.firstName}`;
                                     return (
-                                        <div className='slider-customize'>
+                                        <div className='slider-customize' key={index}>
                                             <div className='slider-wrapper wrapper-doctor' onClick={() => this.hanldeViewDetailDoctor(item)}>
                                                 <div className="bg-image img-outstandingdoctor"
                                                     style={{ backgroundImage: `url(${imageBase64})` }}>
                                                 </div>
                                                 <div className='text text-doctor'>
-                                                <div className="">{language === LANGUAGES.VI ? nameVi : nameEn}</div>
-                                                <div className="">{item.Doctor_Infor.specialtyTypeData.name}</div>
-                                            </div>
+                                                    <div className="">{item.hoten}</div>
+                                                    <div className="">{item.bacsi_khoa.khoa.TenKhoa}</div>
+                                                </div>
                                             </div>
                                         </div>
                                     )
@@ -74,7 +73,6 @@ class OutStandingDoctor extends Component {
             </div>
         )
     }
-
 }
 
 // Lấy dữ liệu từ Redux store và chuyển vào props của component
@@ -94,4 +92,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 // Kết nối component với React Router để có thể sử dụng this.prop.history
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OutStandingDoctor))
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(OutStandingDoctor));

@@ -13,10 +13,10 @@ class DoctorSchedule extends Component {
         super(props);
         this.state = {
             allDays: [],
-            allAvalableTimes: [],
+            allAvailableTimes: [], // Dữ liệu từ API sẽ được lưu vào đây
             isOpenModalBooking: false,
             dataScheduleTimeModal: {}
-        }
+        };
     }
 
     async componentDidMount() {
@@ -25,11 +25,10 @@ class DoctorSchedule extends Component {
         this.setState({
             allDays: allDays,
         });
+        // Lấy dữ liệu lịch ban đầu khi component mount
         if (this.props.doctorIdFromParent) {
-            let res = await getScheduleByDate(this.props.doctorIdFromParent, allDays[0].value);
-            this.setState({
-                allAvalableTimes: res.data ? res.data : []
-            });
+            console.log('Fetching schedule data on mount', this.props.doctorIdFromParent, allDays[0].value);
+            await this.fetchScheduleData(this.props.doctorIdFromParent, allDays[0].value);
         }
     }
 
@@ -37,29 +36,37 @@ class DoctorSchedule extends Component {
         let allDays = [];
         for (let i = 0; i < 7; i++) {
             let object = {};
+            let date = moment().add(i, 'days'); // Tính toán ngày thích hợp
+    
+            // Lấy thứ trong tuần từ 2 đến 7 (Chủ nhật là 1 trong moment.js)
+            let dayOfWeek = date.isoWeekday();
+    
             if (language === LANGUAGES.VI) {
                 if (i === 0) {
-                    let ddMM = moment(new Date()).format('DD/MM');
-                    let today = `hôm nay - ${ddMM}`
-                    object.label = today
+                    let ddMM = date.format('DD/MM');
+                    let today = `hôm nay - ${ddMM}`;
+                    object.label = today;
                 } else {
-                    object.label = moment(new Date()).add(i, 'days').format('dddd - DD/MM');
+                    object.label = date.format(`dddd - DD/MM`);
                 }
             } else {
                 if (i === 0) {
-                    let ddMM = moment(new Date()).format('DD/MM');
-                    let today = `Today - ${ddMM}`
-                    object.label = today
+                    let ddMM = date.format('DD/MM');
+                    let today = `Today - ${ddMM}`;
+                    object.label = today;
                 } else {
-                    object.label = moment(new Date()).add(i, 'days').locale('en').format('ddd - DD/MM');
+                    object.label = date.locale('en').format(`ddd - DD/MM`);
                 }
             }
-            object.value = moment(new Date()).add(i, 'days').startOf('day').valueOf();
-
+    
+            // Gán giá trị của thứ trong tuần (2-7) cho object.value
+            object.value = dayOfWeek;
+    
             allDays.push(object);
         }
         return allDays;
-    }
+    };
+    
 
     async componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.props.language !== prevProps.language) {
@@ -70,26 +77,46 @@ class DoctorSchedule extends Component {
         }
         if (this.props.doctorIdFromParent !== prevProps.doctorIdFromParent) {
             let allDays = this.getArrDays(this.props.language);
-            let res = await getScheduleByDate(this.props.doctorIdFromParent, allDays[0].value);
-            this.setState({
-                allAvalableTimes: res.data ? res.data : []
-            });
+            console.log('Fetching schedule data on update', this.props.doctorIdFromParent, allDays[0].value);
+            await this.fetchScheduleData(this.props.doctorIdFromParent, allDays[0].value);
+        }
+    }
+
+    fetchScheduleData = async (doctorId, date) => {
+        try {
+            let res = await getScheduleByDate(doctorId, date);
+
+            console.log('API Response:', res); // Thêm dòng này để kiểm tra dữ liệu API
+
+            if (res && res.errCode === 0) {
+                this.setState({
+                    allAvailableTimes: res.data ? res.data : [],
+                });
+            } else {
+                this.setState({
+                    allAvailableTimes: [],
+                });
+            }
+        } catch (error) {
+            console.error('Error fetching schedule:', error);
         }
     }
 
     handleOnChangeSelect = async (e) => {
         if (this.props.doctorIdFromParent && this.props.doctorIdFromParent !== -1) {
             let doctorId = this.props.doctorIdFromParent;
-            let date = e.target.value;
+            let date = parseInt(e.target.value); // Chuyển đổi giá trị date thành số nguyên
+    
             let res = await getScheduleByDate(doctorId, date);
-
+    
             if (res && res.errCode === 0) {
                 this.setState({
-                    allAvalableTimes: res.data ? res.data : [],
+                    allAvailableTimes: res.data ? res.data : [],
                 });
             }
         }
-    }
+    };
+    
 
     handleClickScheduleTime = (time) => {
         this.setState({
@@ -105,9 +132,9 @@ class DoctorSchedule extends Component {
     }
 
     render() {
-        let { allDays, allAvalableTimes, isOpenModalBooking, dataScheduleTimeModal } = this.state;
+        let { allDays, allAvailableTimes, isOpenModalBooking, dataScheduleTimeModal } = this.state;
         let { language } = this.props;
-        const hasAvailableTimes = allAvalableTimes && allAvalableTimes.length > 0;
+        const hasAvailableTimes = allAvailableTimes && allAvailableTimes.length > 0;
         return (
             <>
                 <div className="doctor-schedule-container">
@@ -130,10 +157,9 @@ class DoctorSchedule extends Component {
                             <i className='fas fa-calendar-alt'><span><FormattedMessage id={"detail-doctor.calendar"} /></span></i>
                         </div>
                         <div className="time-content">
-                            {allAvalableTimes && allAvalableTimes.length > 0 ?
-                                allAvalableTimes.map((item, index) => {
-                                    let timeDisplay = language === LANGUAGES.VI ?
-                                        item.timeTypeData.valueVi : item.timeTypeData.valueEn
+                            {allAvailableTimes && allAvailableTimes.length > 0 ?
+                                allAvailableTimes.map((item, index) => {
+                                    let timeDisplay = item.cakham ? item.cakham.KhungGio : ''; // Đảm bảo rằng cakham chứa KhungGio
                                     return (
                                         <button onClick={() => this.handleClickScheduleTime(item)} key={index}>{timeDisplay}</button>
                                     )
@@ -152,7 +178,7 @@ class DoctorSchedule extends Component {
                     closeBooking={this.closeBooking}
                     dataTime={dataScheduleTimeModal}
                 />
-            </ >
+            </>
         );
     }
 }

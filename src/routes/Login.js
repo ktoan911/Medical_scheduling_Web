@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from "connected-react-router";
-
 import * as actions from "../store/actions";
 import { KeyCodeUtils, LanguageUtils } from "../utils";
-
 import userIcon from '../../src/assets/images/user.svg';
 import passIcon from '../../src/assets/images/pass.svg';
 import './Login.scss';
 import { FormattedMessage } from 'react-intl';
-
-import adminService from '../services/adminService';
+import { handleLoginApi } from '../services/userService';
 
 class Login extends Component {
     constructor(props) {
@@ -42,37 +39,35 @@ class Login extends Component {
         this.setState({ password: e.target.value })
     }
 
-    redirectToSystemPage = () => {
+    redirectToPage = (userType) => {
         const { navigate } = this.props;
-        const redirectPath = '/system/user-manage';
-        navigate(`${redirectPath}`);
+        if (userType === 'BenhNhan') {
+            navigate('/home');
+        } else if (userType === 'Admin') {
+            navigate('/system/user-redux');
+        } else if (userType === 'BacSi') {
+            navigate('/doctor');
+        }
     }
 
-    processLogin = () => {
+    processLogin = async () => {
         const { username, password } = this.state;
+        this.setState({ loginError: '' });
 
-        const { adminLoginSuccess, adminLoginFail } = this.props;
-        let loginBody = {
-            username: 'admin',
-            password: '123456'
-        }
-        //sucess
-        let adminInfo = {
-            "tlid": "0",
-            "tlfullname": "Administrator",
-            "custype": "A",
-            "accessToken": "eyJhbGciOiJIU"
-        }
-
-        adminLoginSuccess(adminInfo);
-        this.refresh();
-        this.redirectToSystemPage();
         try {
-            adminService.login(loginBody)
-        } catch (e) {
-            console.log('error login : ', e)
+            let data = await handleLoginApi(username, password);
+            if (data && data.errCode !== 0) {
+                this.setState({ loginError: data.message });
+            } else {
+                this.props.userLoginSuccess(data.user);
+                this.refresh();
+                this.redirectToPage(data.userType);
+            }
+        } catch (error) {
+            this.setState({
+                loginError: 'An error occurred. Please try again later.'
+            });
         }
-
     }
 
     handlerKeyDown = (event) => {
@@ -165,8 +160,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         navigate: (path) => dispatch(push(path)),
-        adminLoginSuccess: (adminInfo) => dispatch(actions.adminLoginSuccess(adminInfo)),
-        adminLoginFail: () => dispatch(actions.adminLoginFail()),
+        userLoginSuccess: (userInfo) => dispatch(actions.userLoginSuccess(userInfo)),
     };
 };
 

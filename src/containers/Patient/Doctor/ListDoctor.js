@@ -25,31 +25,44 @@ class ListDoctor extends Component {
 
     fetchDoctors = async () => {
         let res = await getAllDoctorsService();
+        console.log('Response from API:', res); // Kiểm tra response từ API
         if (res.errCode === 0 && res.data) {
+            const formattedDoctors = res.data.map(item => ({
+                id: item.IDBacSi, // Đảm bảo ID phù hợp với đối tượng của bạn
+                hoten: item.hoten,
+                image: item.image || 'default-image-url',
+                bacsi_khoa: [{
+                    ChucVu: item.bacsi_khoa.ChucVu,
+                    khoa: {
+                        IDKhoa: item.bacsi_khoa.khoa.IDKhoa,
+                        tenKhoa: item.bacsi_khoa.khoa.TenKhoa,
+                    },
+                }],
+            }));
+    
             this.setState({
-                doctors: res.data,
+                doctors: formattedDoctors,
+            }, () => {
+                console.log('Doctors in state:', this.state.doctors); // Log để kiểm tra dữ liệu sau khi setState
             });
         }
     }
+    
 
     async componentDidUpdate(prevProps, prevState) {
         if (prevState.searchTerm !== this.state.searchTerm) {
-            this.fetchDoctors();
             const { doctors, searchTerm } = this.state;
             const filteredDoctors = doctors.filter(item => {
-                const fullName = this.props.language === LANGUAGES.VI
-                    ? removeDiacritics(item.lastName + ' ' + item.firstName).toLowerCase()
-                    : removeDiacritics(item.firstName + ' ' + item.lastName).toLowerCase();
+                const hoten = removeDiacritics(item.hoten).toLowerCase();
                 const searchValue = removeDiacritics(searchTerm).toLowerCase();
-                return fullName.includes(searchValue);
+                return hoten.includes(searchValue);
             });
 
             this.setState({
-                hideTitle: filteredDoctors.length === 0, // Cập nhật trạng thái ẩn tiêu đề
+                hideTitle: filteredDoctors.length === 0,
             });
         }
     }
-
 
     handleRedirectDetailDoctor = (item) => {
         if (this.props.history) {
@@ -63,20 +76,17 @@ class ListDoctor extends Component {
 
     render() {
         const { doctors, searchTerm, hideTitle } = this.state;
-        let { language } = this.props;
-
-        
+    
         if (!doctors || doctors.length === 0) {
             return <div>Loading...</div>;
         }
+    
         const filteredDoctors = doctors.filter(item => {
-            const fullName = language === LANGUAGES.VI
-                ? removeDiacritics(item.lastName + ' ' + item.firstName).toLowerCase()
-                : removeDiacritics(item.firstName + ' ' + item.lastName).toLowerCase();
+            const hoten = removeDiacritics(item.hoten).toLowerCase();
             const searchValue = removeDiacritics(searchTerm).toLowerCase();
-            return fullName.includes(searchValue);
+            return hoten.includes(searchValue);
         });
-
+    
         return (
             <div className='d-container'>
                 <div className='d-body'>
@@ -87,7 +97,7 @@ class ListDoctor extends Component {
                     <div className="search-doctor">
                         <input
                             type="text"
-                            placeholder={language === LANGUAGES.EN ? 'Search doctors' : 'Tìm kiếm bác sĩ'}
+                            placeholder='Search doctors / Tìm kiếm bác sĩ'
                             value={searchTerm}
                             onChange={this.handleSearchChange}
                         />
@@ -97,33 +107,31 @@ class ListDoctor extends Component {
                     </div>
                     {filteredDoctors.length > 0 ? (
                         filteredDoctors.map(item => {
-                            const doctorVi = language === LANGUAGES.VI
-                                ? item.positionData.valueVi
-                                : item.positionData.valueEn;
-                            const nameVi = language === LANGUAGES.VI
-                                ? item.lastName + ' ' + item.firstName : item.firstName + ' ' + item.lastName;
-
+                            const doctorPosition = item.bacsi_khoa[0].ChucVu; // Lấy ChucVu từ mảng bacsi_khoa
+                            const doctorName = item.hoten;
+    
                             return (
                                 <div className="content" key={item.id} onClick={() => this.handleRedirectDetailDoctor(item)}>
                                     <div className="i-img" style={{ backgroundImage: `url(${item.image})` }}></div>
                                     <div className="content-right">
-                                        <label className="">{doctorVi} || {nameVi}</label>
-                                        <label className='clinic-name'>{item.Doctor_Infor.specialtyTypeData.name}</label>
+                                        <label className="">{doctorPosition} || {doctorName}</label>
+                                        <label className='clinic-name'>
+                                            {item.bacsi_khoa[0].khoa.tenKhoa}
+                                        </label>
                                     </div>
                                 </div>
                             );
                         })
                     ) : (
                         <div className="no-result-text">
-                            {language === LANGUAGES.VI
-                                ? `Không tìm thấy bác sĩ "${searchTerm}". Vui lòng nhập các từ khóa chung chung hơn.`
-                                : `No doctors found for "${searchTerm}". Please enter more general keywords.`}
+                            {`Không tìm thấy bác sĩ "${searchTerm}". Vui lòng nhập các từ khóa chung hơn.`}
                         </div>
                     )}
                 </div>
             </div>
         );
     }
+    
 }
 
 const mapStateToProps = state => {

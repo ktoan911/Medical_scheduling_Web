@@ -36,9 +36,9 @@ class DetailDoctor extends Component {
     render() {
         let { detailDoctor } = this.state;
         let nameVi = '', nameEn = '';
-        if (detailDoctor && detailDoctor.positionData) {
-            nameVi = `${detailDoctor.positionData.valueVi} | ${detailDoctor.lastName} ${detailDoctor.firstName}`
-            nameEn = `${detailDoctor.positionData.valueEn} | ${detailDoctor.firstName} ${detailDoctor.lastName}`
+        if (detailDoctor) {
+            nameVi = `${detailDoctor.hoten}`
+            nameEn = `${detailDoctor.hoten}`
         }
         let language = this.props.language;
         return (
@@ -47,17 +47,16 @@ class DetailDoctor extends Component {
                 <div className="doctor-detail-container">
                     <div className="intro-doctor">
                         <div className="content-left">
-                            <div className="img" style={{ backgroundImage: `url(${detailDoctor && detailDoctor.image ? detailDoctor.image : ''})` }}></div>
+                            <div className="img" style={{ backgroundImage: `url(${detailDoctor.image || ''})` }}></div>
                         </div>
                         <div className="content-right">
                             <div className="title-doctor">
                                 {language === LANGUAGES.VI ? nameVi : nameEn}
                             </div>
                             <div className="content-doctor">
-                                {detailDoctor && detailDoctor.MarkDown && detailDoctor.MarkDown.description &&
-                                    <span>
-                                        {detailDoctor.MarkDown.description}
-                                    </span>}
+                                <span>
+                                    {detailDoctor.MoTa}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -74,14 +73,14 @@ class DetailDoctor extends Component {
                     </div>
 
                     <div className="detail-info-doctor">
-                        {detailDoctor && detailDoctor.MarkDown && detailDoctor.MarkDown.contentHTML &&
-                            <div dangerouslySetInnerHTML={{ __html: detailDoctor.MarkDown.contentHTML }}></div>}
+                        {detailDoctor.MarkDowns && detailDoctor.MarkDowns.length > 0 &&
+                            <div dangerouslySetInnerHTML={{ __html: detailDoctor.MarkDowns[0].contentHTML }}></div>}
                     </div>
                     <div className="comment-doctor">
 
                     </div>
                 </div>
-            </ >
+            </>
         );
     }
 }
